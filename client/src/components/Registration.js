@@ -1,14 +1,15 @@
 import { Component } from "react";
+import { Link } from "react-router-dom";
 
 class Registration extends Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
             error: null,
         };
 
         this.updateInput = this.updateInput.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleRegistration = this.handleRegistration.bind(this);
     };
 
     updateInput({ target }) {
@@ -17,7 +18,7 @@ class Registration extends Component {
         });
     };
 
-    handleSubmit(e) {
+    handleRegistration(e) {
         e.preventDefault();
         fetch("/user/register.json", {
             method: "POST",
@@ -45,8 +46,9 @@ class Registration extends Component {
                     <input type="text" name="last" placeholder="Last name" onChange={this.updateInput}/>
                     <input type="email" name="email" placeholder="Email: your@email.com" onChange={this.updateInput}/>
                     <input type="password" name="password" placeholder="Password" onChange={this.updateInput}/>
-                    <button onClick={this.handleSubmit}>SUBMIT</button>
+                    <button onClick={this.handleRegistration}>SUBMIT</button>
                 </form>
+                <p>Already have an account? Please <Link to="/login">log in</Link>.</p>
             </>
         )
     }
