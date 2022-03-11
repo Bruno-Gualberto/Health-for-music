@@ -4,7 +4,10 @@ const Logo = () => {
             <img
                 src="/logo.png"
                 alt="socialnetwork logo"
-                style={{ height: "100px" }}
+                style={{ 
+                    height: "200px",
+                    marginTop: "20px" 
+                }}
             />
         </div>
     );

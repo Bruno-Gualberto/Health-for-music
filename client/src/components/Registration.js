@@ -1,5 +1,7 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
+import { Grid, Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 class Registration extends Component {
     constructor() {
@@ -37,18 +39,20 @@ class Registration extends Component {
     render() {
         return (
             <>
-                <h2>Registration</h2>
+                <h2 style={{ textAlign: "center" }}>Registration</h2>
                 {this.state.error && 
-                    <p style={{ color: "red" }}>{this.state.error}</p>
+                    <p className="error-message" >{this.state.error}</p>
                 }
-                <form>
-                    <input type="text" name="first" placeholder="First name" onChange={this.updateInput}/>
-                    <input type="text" name="last" placeholder="Last name" onChange={this.updateInput}/>
-                    <input type="email" name="email" placeholder="Email: your@email.com" onChange={this.updateInput}/>
-                    <input type="password" name="password" placeholder="Password" onChange={this.updateInput}/>
-                    <button onClick={this.handleRegistration}>SUBMIT</button>
-                </form>
-                <p>Already have an account? Please <Link to="/login">log in</Link>.</p>
+                {/* <Grid> */}
+                    <form>
+                        <input type="text" name="first" placeholder="First name" onChange={this.updateInput}/>
+                        <input type="text" name="last" placeholder="Last name" onChange={this.updateInput}/>
+                        <input type="email" name="email" placeholder="Email: your@email.com" onChange={this.updateInput}/>
+                        <input type="password" name="password" placeholder="Password" onChange={this.updateInput}/>
+                        <button onClick={this.handleRegistration}>SUBMIT</button>
+                    </form>
+                    <p>Already have an account? Please <Link to="/login">log in</Link>.</p>
+                {/* </Grid> */}
             </>
         )
     }

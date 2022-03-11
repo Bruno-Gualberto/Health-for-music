@@ -2,6 +2,14 @@ body {
     margin: 0;
     box-sizing: border-box;
     background-color: ghostwhite;
+}
 
-    height: 150vh;
+.welcome-container {
+    width: 100vw;
+    height: 100vh;
+}
+
+.error-message {
+    color: red; 
+    text-align: center;
 }
