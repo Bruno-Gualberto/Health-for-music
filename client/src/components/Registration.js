@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
-import { Grid, Button } from "@material-ui/core";
+import { Grid, Button, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 class Registration extends Component {
@@ -40,21 +40,85 @@ class Registration extends Component {
         return (
             <>
                 <h2 style={{ textAlign: "center" }}>Registration</h2>
-                {this.state.error && 
-                    <p className="error-message" >{this.state.error}</p>
-                }
-                {/* <Grid> */}
-                    <form>
-                        <input type="text" name="first" placeholder="First name" onChange={this.updateInput}/>
-                        <input type="text" name="last" placeholder="Last name" onChange={this.updateInput}/>
-                        <input type="email" name="email" placeholder="Email: your@email.com" onChange={this.updateInput}/>
-                        <input type="password" name="password" placeholder="Password" onChange={this.updateInput}/>
-                        <button onClick={this.handleRegistration}>SUBMIT</button>
-                    </form>
-                    <p>Already have an account? Please <Link to="/login">log in</Link>.</p>
-                {/* </Grid> */}
+                {this.state.error && (
+                    <p className="error-message">{this.state.error}</p>
+                )}
+                <form>
+                    <Grid
+                        container
+                        direction="column"
+                        alignItems="center"
+                        spacing={1}
+                    >
+                        <Grid item container xs={12}>
+                            <TextField
+                                className="input-TextField"
+                                variant="outlined"
+                                label="First name*"
+                                type="text"
+                                name="first"
+                                placeholder="First name"
+                                onChange={this.updateInput}
+                            />
+                        </Grid>
+                        <Grid item container xs={12}>
+                            <TextField
+                                className="input-TextField"
+                                variant="outlined"
+                                label="Last name*"
+                                type="text"
+                                name="last"
+                                placeholder="Last name"
+                                onChange={this.updateInput}
+                            />
+                        </Grid>
+                        <Grid item container xs={12}>
+                            <TextField
+                                className="input-TextField"
+                                variant="outlined"
+                                label="Email*"
+                                type="email"
+                                name="email"
+                                placeholder="Email: your@email.com"
+                                onChange={this.updateInput}
+                            />
+                        </Grid>
+                        <Grid item container xs={12}>
+                            <TextField
+                                className="input-TextField"
+                                variant="outlined"
+                                label="Password*"
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                onChange={this.updateInput}
+                            />
+                        </Grid>
+                        <Grid item container xs={12} justifyContent="center">
+                            <Button
+                                style={{ width: "75%" }}
+                                variant="contained"
+                                color="primary"
+                                onClick={this.handleRegistration}
+                            >
+                                Submit
+                            </Button>
+                        </Grid>
+                        <Grid item container xs={12}>
+                            <p
+                                style={{
+                                    textAlign: "center",
+                                    margin: 0,
+                                }}
+                            >
+                                Already have an account? Please{" "}
+                                <Link to="/login">log in</Link>.
+                            </p>
+                        </Grid>
+                    </Grid>
+                </form>
             </>
-        )
+        );
     }
 }
 

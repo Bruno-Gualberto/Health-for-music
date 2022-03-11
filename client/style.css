@@ -13,3 +13,7 @@ body {
     color: red; 
     text-align: center;
 }
+
+.input-TextField {
+    width: 100%;
+}
