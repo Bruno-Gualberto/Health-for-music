@@ -3,10 +3,12 @@ import Registration from "./Registration";
 import Logo from "./Logo";
 import Login from "./Login";
 import ResetPassword from "./ResetPassword";
+import Header
 
 const Welcome = () => {
     return (
         <div>
+            <Header />
             <Logo />
             <BrowserRouter>
                 <Route exact path="/login">

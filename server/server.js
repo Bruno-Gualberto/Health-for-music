@@ -8,6 +8,29 @@ const { hash, compare } = require("./bc");
 const cryptoRandomString = require("crypto-random-string");
 const { sendEmail } = require("./ses");
 
+const multer = require("multer");
+const uidSafe = require("uid-safe");
+
+const s3 = require("./s3");
+
+const diskStorage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, path.join(__dirname, "uploads"));
+    },
+    filename: function (req, file, callback) {
+        uidSafe(24).then((uid) => {
+            callback(null, uid + path.extname(file.originalname));
+        });
+    },
+});
+
+const uploader = multer({
+    storage: diskStorage,
+    limits: {
+        fileSize: 2097152,
+    },
+});
+
 app.use(compression());
 
 app.use(cookieSession({
@@ -121,6 +144,23 @@ app.post("/reset-password/verify.json", (req, res) => {
             return res.json({ success: false, error: "The reset code is either wrong or to old. Please try again." });
         }
     });
+});
+
+app.get("/user/data.json", (req, res) => {
+    db.getUserById(req.session.userId).then(({ rows }) => {
+        return res.json(rows[0])
+    }).catch(err => {
+        console.log("error on GET /user/data.json", err)
+        return res.json({ success: false })
+    })
+});
+
+app.post("/profile-pic.json", uploader.single("file"), s3.upload, (req, res) => {
+    let url = `https://s3.amazonaws.com/bucketsocialnetwork/${req.file.filename}`;
+
+    db.updateImage(req.session.userId, url).then(({ rows }) => {
+        res.json({ profilePic: rows[0].profilePic })
+    }).catch(err => console.log("error on POST /profile-pic.json", err));
 });
 
 app.get("*", function (req, res) {
