@@ -2,6 +2,7 @@ body {
     margin: 0;
     box-sizing: border-box;
     background-color: ghostwhite;
+    font-family: "Roboto", sans-serif;
 }
 
 .welcome-container {
@@ -10,10 +11,6 @@ body {
 }
 
 .error-message {
-    color: red; 
+    color: red;
     text-align: center;
-}
-
-.input-TextField {
-    width: 100%;
 }

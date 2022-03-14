@@ -163,6 +163,12 @@ app.post("/profile-pic.json", uploader.single("file"), s3.upload, (req, res) => 
     }).catch(err => console.log("error on POST /profile-pic.json", err));
 });
 
+app.post("/user/add-update-bio.json", (req, res) => {
+    db.addUpdateBio(req.body.bio, req.session.userId).then(({ rows }) => {
+        res.json({ bio: rows[0].bio })
+    }).catch(err => console.log("error adding bio", err))
+});
+
 app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "..", "client", "index.html"));
 });

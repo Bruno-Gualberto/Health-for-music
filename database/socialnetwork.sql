@@ -7,7 +7,8 @@ CREATE TABLE users (
     last VARCHAR(255) NOT NULL CHECK (last != ''),
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    profile_pic VARCHAR
+    profile_pic VARCHAR,
+    bio VARCHAR
 );
 
 CREATE TABLE reset_codes (

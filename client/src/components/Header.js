@@ -1,30 +1,34 @@
-import { AppBar, Toolbar, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    useScrollTrigger,
+    Slide,
+} from "@mui/material";
 
-const useStyles = makeStyles(() => ({
-    root: {
-        flexGrow: 1,
-    },
-    appBar: {
-        boxShadow: "none"
-    },
-    title: {
-        flexGrow: 1
-    }
-}))
-
-const Header = () => {
-    const classes = useStyles();
+function HideOnScroll(props) {
+    const { children, window } = props;
+    const trigger = useScrollTrigger();
 
     return (
-        <div className={classes.root}>
-            <AppBar position="sticky" className={classes.appBar}>
-                <Toolbar>
-                    <Typography variant="h6" className={classes.title}>Socialnework</Typography>
-                </Toolbar>
-            </AppBar>
-        </div>
+        <Slide appear={false} direction="down" in={!trigger}>
+            {children}
+        </Slide>
     );
 }
+
+const Header = (props) => {
+    return (
+        <>
+            <HideOnScroll {...props}>
+                <AppBar position="sticky" elevation={0}>
+                    <Toolbar>
+                        <Typography variant="h6">Socialnetwork</Typography>
+                    </Toolbar>
+                </AppBar>
+            </HideOnScroll>
+        </>
+    );
+};
 
 export default Header;

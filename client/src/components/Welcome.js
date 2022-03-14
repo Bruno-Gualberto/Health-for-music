@@ -4,46 +4,30 @@ import Logo from "./Logo";
 import Login from "./Login";
 import ResetPassword from "./ResetPassword";
 import Header from "./Header";
-import { Grid } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles(() => ({
-    title: {
-        textAlign: "center"
-    }
-}));
+import { Grid } from "@mui/material";
 
 const Welcome = () => {
-    const classes = useStyles();
 
     return (
         <div className="welcome-container">
             <Header />
-            <Grid container justifyContent="center">
-                <Grid item xs={12} style={{textAlign: "center"}}>
-                    <Logo />
-                </Grid>
-                
+            <Grid container
+                justifyContent="center"
+            >
+                <Logo />
+                    
                 <BrowserRouter>
-                    <Grid item>
-                        <Route exact path="/login">
-                            <h1 className={classes.title}>Welcome!</h1>
-                            <Login />
-                        </Route>
-                    </Grid>
+                    <Route exact path="/login">
+                        <Login />
+                    </Route>
 
-                    <Grid item>
-                        <Route exact path="/reset-password">
-                            <ResetPassword />
-                        </Route>
-                    </Grid>
+                    <Route exact path="/reset-password">
+                        <ResetPassword />
+                    </Route>
 
-                    <Grid item>
-                        <Route exact path="/">
-                            <h1 className={classes.title}>Welcome!</h1>
-                            <Registration />
-                        </Route>
-                    </Grid>
+                    <Route exact path="/">
+                        <Registration />
+                    </Route>
                 </BrowserRouter>
             </Grid>
         </div>

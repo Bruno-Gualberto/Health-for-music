@@ -46,7 +46,7 @@ module.exports.updatePassword = (password, email) => {
 
 module.exports.getUserById = userId => {
     return db.query(`
-        SELECT first, last, email, profile_pic AS "profilePic" 
+        SELECT first, last, email, bio, profile_pic AS "profilePic", id 
         FROM users
         WHERE id = $1
     `, [userId]);
@@ -59,4 +59,13 @@ module.exports.updateImage = (userId, url) => {
         WHERE id = $1
         RETURNING profile_pic AS "profilePic"
     `, [userId, url])
+}
+
+module.exports.addUpdateBio = (bio, userId) => {
+    return db.query(`
+        UPDATE users
+        SET bio = $1
+        WHERE id = $2
+        RETURNING bio
+   `, [bio, userId])
 }

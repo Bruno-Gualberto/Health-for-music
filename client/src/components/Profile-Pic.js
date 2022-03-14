@@ -3,8 +3,7 @@ const ProfilePic = ({ url, first, last, toggleUploader }) => {
     
     return (
         <div onClick={toggleUploader}>
-            Profile-Pic
-            <img src={url} alt={`${first} ${last}`} />
+            <img style={{height: "150px"}} src={url} alt={`${first} ${last}`} />
         </div>
     )
 }
