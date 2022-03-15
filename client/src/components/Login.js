@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
-import { Grid, Button, TextField, Box } from "@mui/material";
+import { Grid, Button, TextField, Box, Typography } from "@mui/material";
 
 class Login extends Component {
     constructor() {
@@ -20,28 +20,31 @@ class Login extends Component {
 
     handleLogin(e) {
         e.preventDefault();
-        fetch("/user/login.json", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(this.state),
-        })
-            .then((resp) => resp.json())
-            .then((data) => {
-                data.success
-                    ? location.reload()
-                    : this.setState({
-                          error:
-                              "Sorry, something went wrong. Please try again!",
-                      });
-            })
-            .catch((err) => {
-                console.log("error on login: ", err);
-                this.setState({
-                    error: "Sorry, something went wrong. Please try again!",
-                });
+        if (!this.state.email || !this.state.password) {
+            this.setState({
+                error: "All fields with * are required",
             });
+        } else {
+            fetch("/user/login.json", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(this.state),
+            })
+                .then((resp) => resp.json())
+                .then((data) => {
+                    data.success
+                        ? location.reload()
+                        : this.setState({ error: data.error });
+                })
+                .catch((err) => {
+                    console.log("error on login: ", err);
+                    this.setState({
+                        error: data.error,
+                    });
+                });
+        }
     }
 
     render() {
@@ -54,7 +57,9 @@ class Login extends Component {
                     justifyContent="flex-start"
                 >
                     <Grid item style={{ textAlign: "center" }}>
-                        <h1>Welcome!</h1>
+                        <Typography variant="h3" component="h1">
+                            Welcome!
+                        </Typography>
                     </Grid>
                     <Grid
                         item
@@ -62,12 +67,32 @@ class Login extends Component {
                             textAlign: "center",
                         }}
                     >
-                        <h2 style={{ marginTop: "0" }}>Login!</h2>
+                        <Typography
+                            variant="h4"
+                            component="h2"
+                            style={{ marginTop: "0" }}
+                        >
+                            Login!
+                        </Typography>
                         {this.state.error && (
-                            <p style={{ color: "red" }}>{this.state.error}</p>
+                            <Typography
+                                variant="body1"
+                                style={{ color: "red" }}
+                            >
+                                {this.state.error}
+                            </Typography>
                         )}
                     </Grid>
-                    <Grid item sx={{ width: 1 / 2 }}>
+                    <Grid
+                        item
+                        sx={{
+                            width: {
+                                xs: 4 / 5,
+                                sm: 1 / 2,
+                            },
+                            mt: 1,
+                        }}
+                    >
                         <Box component="form">
                             <Grid
                                 container
@@ -79,7 +104,7 @@ class Login extends Component {
                                     <TextField
                                         fullWidth
                                         variant="outlined"
-                                        label="Email*"
+                                        label="Email"
                                         type="email"
                                         name="email"
                                         placeholder="Email: your@email.com"

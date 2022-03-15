@@ -7,15 +7,12 @@ import Header from "./Header";
 import { Grid } from "@mui/material";
 
 const Welcome = () => {
-
     return (
         <div className="welcome-container">
             <Header />
-            <Grid container
-                justifyContent="center"
-            >
-                <Logo />
-                    
+            <Grid container justifyContent="center">
+                <Logo height="150px" />
+
                 <BrowserRouter>
                     <Route exact path="/login">
                         <Login />
@@ -32,6 +29,6 @@ const Welcome = () => {
             </Grid>
         </div>
     );
-}
+};
 
 export default Welcome;

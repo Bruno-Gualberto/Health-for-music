@@ -33,10 +33,11 @@ const uploader = multer({
 
 app.use(compression());
 
-app.use(cookieSession({
+app.use(
+    cookieSession({
         secret: `I'm always angry.`,
         maxAge: 1000 * 60 * 60 * 24 * 14,
-        sameSite: true
+        sameSite: true,
     })
 );
 
@@ -48,21 +49,38 @@ app.post("/user/register.json", (req, res) => {
     console.log("POST request on /user/register.json", req.body);
     const { first, last, email, password } = req.body;
     if (first || last || email || password) {
-        hash(password).then(hashedPassword => {
-            db.addUser(first, last, email, hashedPassword).then(({ rows }) => {
-                console.log("logging user id after POST on /user/register.json: ", rows[0].id);
-                req.session.userId = rows[0].id;
-                return res.json({ success: true });
-            }).catch(err => {
-                console.log("error adding user info:", err);
-                return res.json({ success: false });
+        hash(password)
+            .then((hashedPassword) => {
+                db.addUser(first, last, email, hashedPassword)
+                    .then(({ rows }) => {
+                        console.log(
+                            "logging user id after POST on /user/register.json: ",
+                            rows[0].id
+                        );
+                        req.session.userId = rows[0].id;
+                        return res.json({ success: true });
+                    })
+                    .catch((err) => {
+                        console.log("error adding user info:", err);
+                        return res.json({
+                            success: false,
+                            error:
+                                "Ops! Something went wrong. Please try again.",
+                        });
+                    });
             })
-        }).catch(err => {
-            console.log("error hashing password: ", err);
-            return res.json({ success: false });
-        })
+            .catch((err) => {
+                console.log("error hashing password: ", err);
+                return res.json({
+                    success: false,
+                    error: "Ops! Something went wrong! Please try again.",
+                });
+            });
     } else {
-        return res.json({ success: false });
+        return res.json({
+            success: false,
+            error: "All fields with * are required",
+        });
     }
 });
 
@@ -75,98 +93,184 @@ app.post("/user/login.json", (req, res) => {
     let userId;
     const { email, password } = req.body;
 
-    db.getUserByEmail(email).then(({ rows }) => {
-        hashedPassword = rows[0].password;
-        userId = rows[0].id
-    }).then(() => {
-        compare(password, hashedPassword).then(isMatch => {
-            if (!isMatch) {
-                return res.json({ success: false });
-            } else {
-                req.session.userId = userId;
-                return res.json({ success: true })
-            }
+    db.getUserByEmail(email)
+        .then(({ rows }) => {
+            hashedPassword = rows[0].password;
+            userId = rows[0].id;
         })
-    }).catch(err => {
-        console.log("error on getting user info on login", err);
-        return res.json({ success: false });
-    })
+        .then(() => {
+            compare(password, hashedPassword).then((isMatch) => {
+                if (!isMatch) {
+                    return res.json({
+                        success: false,
+                        error: "Ops! Wrong password or email.",
+                    });
+                } else {
+                    req.session.userId = userId;
+                    return res.json({ success: true });
+                }
+            });
+        })
+        .catch((err) => {
+            console.log("error on getting user info on login", err);
+            return res.json({
+                success: false,
+                error: "Ops! Wrong password or email.",
+            });
+        });
 });
 
 app.post("/reset-password/email.json", (req, res) => {
     const message = "Here is your reset code: ";
     const subject = "Reset password code";
 
-    db.getUserByEmail(req.body.email).then(({ rows }) => {
-        if (rows.length) {
-            const secretCode = cryptoRandomString({ length: 6 });
-            db.addResetCode(rows[0].email, secretCode).then(({ rows }) => {
-                // send email
-                sendEmail(rows[0].email, message + rows[0].code, subject).then(() => {
-                    return res.json({ success: true })
-                }).catch(err => {
-                    console.log("error sending email", err)
-                    return res.json({ success: false })
-                })
-            }).catch(err => {
-                console.log("error adding reset code", err)
-                return res.json({ success: false })
-            })
-        } else {
+    db.getUserByEmail(req.body.email)
+        .then(({ rows }) => {
+            if (rows.length) {
+                const secretCode = cryptoRandomString({ length: 6 });
+                db.addResetCode(rows[0].email, secretCode)
+                    .then(({ rows }) => {
+                        // send email
+                        sendEmail(
+                            rows[0].email,
+                            message + rows[0].code,
+                            subject
+                        )
+                            .then(() => {
+                                return res.json({ success: true });
+                            })
+                            .catch((err) => {
+                                console.log("error sending email", err);
+                                return res.json({ success: false });
+                            });
+                    })
+                    .catch((err) => {
+                        console.log("error adding reset code", err);
+                        return res.json({ success: false });
+                    });
+            } else {
+                return res.json({ success: false });
+            }
+        })
+        .catch((err) => {
+            console.log(
+                "error getting user info on POST /reset-password/email.json",
+                err
+            );
             return res.json({ success: false });
-        }
-    }).catch(err => {
-        console.log("error getting user info on POST /reset-password/email.json", err);
-        return res.json({ success: false });
-    })
+        });
 });
 
 app.post("/reset-password/verify.json", (req, res) => {
     const { email, code, password } = req.body;
-    db.getCode(email).then(({ rows }) => {
-        if (rows.length) {
-            if (rows[0].code === code) {
-                hash(password).then((hashedPassword) => {
-                    db.updatePassword(hashedPassword, email).then(() => {
-                        return res.json({ success: true });
-                    }).catch((err) => {
-                        console.log("error updating password:", err);
-                        return res.json({ success: false, error: "Ops, something went wrong!"});
+    db.getCode(email)
+        .then(({ rows }) => {
+            if (rows.length) {
+                if (rows[0].code === code) {
+                    hash(password)
+                        .then((hashedPassword) => {
+                            db.updatePassword(hashedPassword, email)
+                                .then(() => {
+                                    return res.json({ success: true });
+                                })
+                                .catch((err) => {
+                                    console.log(
+                                        "error updating password:",
+                                        err
+                                    );
+                                    return res.json({
+                                        success: false,
+                                        error: "Ops, something went wrong!",
+                                    });
+                                });
+                        })
+                        .catch((err) => {
+                            console.log("error hashing password", err);
+                            return res.json({
+                                success: false,
+                                error: "Ops, something went wrong!",
+                            });
+                        });
+                } else {
+                    return res.json({
+                        success: false,
+                        error: "Your reset code maybe wrong. Please try again.",
                     });
-                }).catch((err) => {
-                    console.log("error hashing password", err);
-                    return res.json({ success: false, error: "Ops, something went wrong!" });
-                });
+                }
             } else {
-                return res.json({ success: false, error: "Your reset code maybe wrong. Please try again." });
+                return res.json({
+                    success: false,
+                    error:
+                        "The reset code is either wrong or to old. Please try again.",
+                });
             }
-        } else {
-            return res.json({ success: false, error: "The reset code is either wrong or to old. Please try again." });
-        }
-    });
+        })
+        .catch((err) => {
+            console.log("error getting code by email: ", err);
+            return res.json({
+                success: false,
+                error:
+                    "The reset code is either wrong or to old. Please try again.",
+            });
+        });
 });
 
 app.get("/user/data.json", (req, res) => {
-    db.getUserById(req.session.userId).then(({ rows }) => {
-        return res.json(rows[0])
-    }).catch(err => {
-        console.log("error on GET /user/data.json", err)
-        return res.json({ success: false })
-    })
+    db.getUserById(req.session.userId)
+        .then(({ rows }) => {
+            return res.json(rows[0]);
+        })
+        .catch((err) => {
+            console.log("error on GET /user/data.json", err);
+            return res.json({ success: false });
+        });
 });
 
-app.post("/profile-pic.json", uploader.single("file"), s3.upload, (req, res) => {
-    let url = `https://s3.amazonaws.com/bucketsocialnetwork/${req.file.filename}`;
+app.post(
+    "/profile-pic.json",
+    uploader.single("file"),
+    s3.upload,
+    (req, res) => {
+        let url = `https://s3.amazonaws.com/bucketsocialnetwork/${req.file.filename}`;
 
-    db.updateImage(req.session.userId, url).then(({ rows }) => {
-        res.json({ profilePic: rows[0].profilePic })
-    }).catch(err => console.log("error on POST /profile-pic.json", err));
-});
+        db.updateImage(req.session.userId, url)
+            .then(({ rows }) => {
+                res.json({ profilePic: rows[0].profilePic });
+            })
+            .catch((err) =>
+                console.log("error on POST /profile-pic.json", err)
+            );
+    }
+);
 
 app.post("/user/add-update-bio.json", (req, res) => {
-    db.addUpdateBio(req.body.bio, req.session.userId).then(({ rows }) => {
-        res.json({ bio: rows[0].bio })
-    }).catch(err => console.log("error adding bio", err))
+    db.addUpdateBio(req.body.bio, req.session.userId)
+        .then(({ rows }) => {
+            res.json({ bio: rows[0].bio });
+        })
+        .catch((err) => console.log("error adding bio", err));
+});
+
+app.get("/last-users.json", async (req, res) => {
+    try {
+        const lastUsers = await db.getLastUsers().then(({ rows }) => rows);
+        return res.json({ users: lastUsers, error: false });
+    } catch (err) {
+        console.log("error on getting last users: ", err);
+        return res.json({ error: true });
+    }
+});
+
+app.get("/searched-users", async (req, res) => {
+    try {
+        let searchedUsers = await db
+            .getSearchedUsers(req.query.search)
+            .then(({ rows }) => rows);
+        return res.json({ users: searchedUsers, error: false });
+    } catch (err) {
+        console.log("error on getting last users: ", err);
+        return res.json({ error: true });
+    }
 });
 
 app.get("*", function (req, res) {

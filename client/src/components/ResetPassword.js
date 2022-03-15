@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
-import { Grid, Button, TextField, Box } from "@mui/material";
+import { Grid, Button, TextField, Box, Typography } from "@mui/material";
 
 class ResetPassword extends Component {
     constructor() {
@@ -80,15 +80,29 @@ class ResetPassword extends Component {
             return (
                 <>
                     <Grid item style={{ textAlign: "center" }}>
-                        <p style={{ marginTop: "0" }}>
+                        <Typography variant="body1" sx={{ mt: 0.5 }}>
                             First, enter your email to receive a reset code
-                        </p>
+                        </Typography>
 
                         {this.state.error && (
-                            <p style={{ color: "red" }}>{this.state.error}</p>
+                            <Typography
+                                variant="body1"
+                                style={{ color: "red" }}
+                            >
+                                {this.state.error}
+                            </Typography>
                         )}
                     </Grid>
-                    <Grid item sx={{ width: 1 / 2 }}>
+                    <Grid
+                        item
+                        sx={{
+                            width: {
+                                xs: 4 / 5,
+                                sm: 1 / 2,
+                            },
+                            mt: 2,
+                        }}
+                    >
                         <Box component="form">
                             <Grid
                                 container
@@ -127,17 +141,31 @@ class ResetPassword extends Component {
             return (
                 <>
                     <Grid item style={{ textAlign: "center" }}>
-                        <p style={{ marginTop: "0" }}>
+                        <Typography variant="body1" sx={{ mt: 0.5 }}>
                             Second, enter the reset code sent to your email and
                             the new password
-                        </p>
+                        </Typography>
 
                         {this.state.error && (
-                            <p style={{ color: "red" }}>{this.state.error}</p>
+                            <Typography
+                                variant="body1"
+                                style={{ color: "red" }}
+                            >
+                                {this.state.error}
+                            </Typography>
                         )}
                     </Grid>
 
-                    <Grid item sx={{ width: 1 / 2 }}>
+                    <Grid
+                        item
+                        sx={{
+                            width: {
+                                xs: 4 / 5,
+                                sm: 1 / 2,
+                            },
+                            mt: 2,
+                        }}
+                    >
                         <Box component="form">
                             <Grid
                                 container
@@ -187,10 +215,10 @@ class ResetPassword extends Component {
         } else if (this.state.view === 3) {
             return (
                 <div>
-                    <p>
+                    <Typography variant="h6" component="p">
                         Password updated! Please{" "}
                         <Link to="/login">log in again</Link>.
-                    </p>
+                    </Typography>
                 </div>
             );
         }
@@ -206,9 +234,10 @@ class ResetPassword extends Component {
                     justifyContent="flex-start"
                 >
                     <Grid item style={{ textAlign: "center" }}>
-                        <h1>Reset Password!</h1>
+                        <Typography variant="h3" component="h1">
+                            Reset Password!
+                        </Typography>
                     </Grid>
-
                     {this.handleViews()}
                 </Grid>
             </>

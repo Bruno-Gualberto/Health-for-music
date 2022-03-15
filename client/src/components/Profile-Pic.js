@@ -1,11 +1,18 @@
-const ProfilePic = ({ url, first, last, toggleUploader }) => {
+import { Grid } from "@mui/material";
+
+const ProfilePic = ({ url, first, last, toggleUploader, width }) => {
     url = url || "default-picture.png";
-    
+
     return (
-        <div onClick={toggleUploader}>
-            <img style={{height: "150px"}} src={url} alt={`${first} ${last}`} />
-        </div>
-    )
-}
+        <Grid item xs={12} container justifyContent="center">
+            <img
+                onClick={toggleUploader}
+                style={{ width: width, objectFit: "cover" }}
+                src={url}
+                alt={`${first} ${last}`}
+            />
+        </Grid>
+    );
+};
 
 export default ProfilePic;

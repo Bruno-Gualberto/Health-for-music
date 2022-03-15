@@ -1,13 +1,19 @@
 import { Component } from "react";
+import { Fab, Fade } from "@mui/material";
+import { AddPhotoAlternate, Upload } from "@mui/icons-material";
 
 class Uploader extends Component {
     constructor(props) {
-        super(props)
+        super(props);
+        this.state = {
+            transition: false,
+        };
     }
 
     handleChange(e) {
         this.setState({
             [e.target.name]: e.target.files[0],
+            transition: true,
         });
     }
 
@@ -21,12 +27,17 @@ class Uploader extends Component {
 
         fetch("/profile-pic.json", {
             method: "POST",
-            body: fd
-        }).then(resp => resp.json()).then(data => {
-            // updating profilePic in App state with only the pic URL:
-            this.props.updateProfilePic(data.profilePic)
-
-        }).catch(err => console.log("error uploading profile picture", err));
+            body: fd,
+        })
+            .then((resp) => resp.json())
+            .then((data) => {
+                // updating profilePic in App state with only the pic URL:
+                this.props.updateProfilePic(data.profilePic);
+                this.props.toggleUploader();
+            })
+            .catch((err) =>
+                console.log("error uploading profile picture", err)
+            );
     }
 
     render() {
@@ -34,12 +45,40 @@ class Uploader extends Component {
             <div>
                 Uploader
                 <div onClick={this.props.toggleUploader}>X</div>
-                <form onSubmit={(e) => this.handleSubmit(e)}>
-                    <input type="file" name="profilePic" onChange={(e) => this.handleChange(e)}/>
-                    <button>UPLOAD</button>
+                <form>
+                    {!this.state.profilePic ? (
+                        <Fab
+                            variant="contained"
+                            color="primary"
+                            component="label"
+                        >
+                            <AddPhotoAlternate />
+                            <input
+                                type="file"
+                                hidden
+                                name="profilePic"
+                                onChange={(e) => this.handleChange(e)}
+                            />
+                        </Fab>
+                    ) : (
+                        <Fade
+                            in={this.state.transition}
+                            style={{ transformOrigin: "left center" }}
+                            {...{ timeout: 1000 }}
+                        >
+                            <Fab
+                                variant="extended"
+                                color="primary"
+                                onClick={(e) => this.handleSubmit(e)}
+                            >
+                                <Upload />
+                                {this.state.profilePic.name}
+                            </Fab>
+                        </Fade>
+                    )}
                 </form>
             </div>
-        )
+        );
     }
 }
 

@@ -4,6 +4,8 @@ import Logo from "./Logo";
 import Uploader from "./Uploader";
 import Profile from "./Profile";
 import Header from "./Header";
+import FindPeople from "./FindPeople";
+import { Grid } from "@mui/material";
 
 class App extends Component {
     constructor() {
@@ -47,23 +49,39 @@ class App extends Component {
         return (
             <div>
                 <Header />
-                App
-                <Logo />
-                <Profile
-                    first={this.state.first}
-                    last={this.state.last}
-                    url={this.state.profilePic}
-                    bio={this.state.bio}
-                    userId={this.state.userId}
-                    toggleUploader={this.toggleUploader}
-                    setBio={this.setBio}
-                />
-                {this.state.uploaderVisible && (
-                    <Uploader
-                        toggleUploader={this.toggleUploader}
-                        updateProfilePic={this.updateProfilePic}
-                    />
-                )}
+                <Grid container justifyContent="center" rowSpacing={2}>
+                    <Grid item xs={12} container justifyContent="center">
+                        <Logo height="150px" />
+                    </Grid>
+
+                    <BrowserRouter>
+                        <Grid item xs={12} container justifyContent="center">
+                            <Route exact path="/find-people">
+                                <FindPeople />
+                            </Route>
+                        </Grid>
+
+                        <Grid item xs={12} container justifyContent="center">
+                            <Route exact path="/">
+                                <Profile
+                                    first={this.state.first}
+                                    last={this.state.last}
+                                    url={this.state.profilePic}
+                                    bio={this.state.bio}
+                                    userId={this.state.userId}
+                                    toggleUploader={this.toggleUploader}
+                                    setBio={this.setBio}
+                                />
+                                {this.state.uploaderVisible && (
+                                    <Uploader
+                                        toggleUploader={this.toggleUploader}
+                                        updateProfilePic={this.updateProfilePic}
+                                    />
+                                )}
+                            </Route>
+                        </Grid>
+                    </BrowserRouter>
+                </Grid>
             </div>
         );
     }

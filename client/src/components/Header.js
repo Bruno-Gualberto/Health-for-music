@@ -1,3 +1,4 @@
+import Logo from "./Logo";
 import {
     AppBar,
     Toolbar,
@@ -7,7 +8,7 @@ import {
 } from "@mui/material";
 
 function HideOnScroll(props) {
-    const { children, window } = props;
+    const { children } = props;
     const trigger = useScrollTrigger();
 
     return (
@@ -21,9 +22,12 @@ const Header = (props) => {
     return (
         <>
             <HideOnScroll {...props}>
-                <AppBar position="sticky" elevation={0}>
+                <AppBar position="sticky" elevation={0} sx={{ mb: 2 }}>
                     <Toolbar>
-                        <Typography variant="h6">Socialnetwork</Typography>
+                        <Logo height="50px" />
+                        <Typography sx={{ ml: 1 }} variant="h6" component="h6">
+                            Socialnetwork
+                        </Typography>
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>

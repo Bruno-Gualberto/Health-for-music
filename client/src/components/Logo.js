@@ -1,16 +1,13 @@
-const Logo = () => {
+const Logo = (props) => {
     return (
         <div>
             <img
                 src="/logo.png"
                 alt="socialnetwork logo"
-                style={{ 
-                    height: "200px",
-                    marginTop: "20px" 
-                }}
+                style={{ height: props.height }}
             />
         </div>
     );
-}
+};
 
 export default Logo;

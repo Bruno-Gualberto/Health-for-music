@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
-import { Grid, Button, TextField, Box } from "@mui/material";
+import { Grid, Button, TextField, Box, Typography } from "@mui/material";
 
 class Registration extends Component {
     constructor() {
@@ -32,18 +32,14 @@ class Registration extends Component {
             .then((data) => {
                 data.success
                     ? location.reload()
-                    : this.setState({
-                          error: "Ops! Something went wrong. Please try again!",
-                      });
+                    : this.setState({ error: data.error });
             })
             .catch((err) => {
                 console.log(
                     "error receiving response on POST /user/register.json",
                     err
                 );
-                this.setState({
-                    error: "Ops! Something went wrong. Please try again!",
-                });
+                this.setState({ error: "data.error" });
             });
     }
 
@@ -57,15 +53,37 @@ class Registration extends Component {
                     justifyContent="flex-start"
                 >
                     <Grid item style={{ textAlign: "center" }}>
-                        <h1>Welcome!</h1>
+                        <Typography variant="h3" component="h1">
+                            Welcome!
+                        </Typography>
                     </Grid>
                     <Grid item style={{ textAlign: "center" }}>
-                        <h2 style={{ marginTop: "0" }}>Registration</h2>
+                        <Typography
+                            variant="h4"
+                            component="h2"
+                            style={{ marginTop: "0" }}
+                        >
+                            Registration
+                        </Typography>
                         {this.state.error && (
-                            <p className="error-message">{this.state.error}</p>
+                            <Typography
+                                variant="body1"
+                                className="error-message"
+                            >
+                                {this.state.error}
+                            </Typography>
                         )}
                     </Grid>
-                    <Grid item sx={{ width: 1 / 2 }}>
+                    <Grid
+                        item
+                        sx={{
+                            width: {
+                                xs: 4 / 5,
+                                sm: 1 / 2,
+                            },
+                            mt: 1,
+                        }}
+                    >
                         <Box component="form">
                             <Grid
                                 container
