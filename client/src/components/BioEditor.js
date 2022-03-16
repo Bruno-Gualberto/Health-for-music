@@ -58,14 +58,20 @@ class BioEditor extends Component {
             return (
                 <Grid
                     container
+                    rowSpacing={1}
                     direction="column"
                     justifyContent="space-between"
-                    sx={{ height: 1, pb: 4 }}
+                    sx={{ height: 1, flexWrap: "nowrap" }}
                 >
-                    <Grid item sx={{ width: 1 }}>
+                    <Grid item xs={1}>
+                        <Typography variant="h5" component="h1">
+                            Here is my bio!
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={9} sx={{ width: 1 }}>
                         <Fade in={this.state.fade} {...{ timeout: 250 }}>
                             <TextField
-                                sx={{ mb: 1 }}
+                                sx={{ mb: 1, height: 1 }}
                                 fullWidth
                                 multiline
                                 rows={4}
@@ -76,8 +82,14 @@ class BioEditor extends Component {
                             />
                         </Fade>
                     </Grid>
-                    <Grid item container alignItems="flex-end" spacing={2}>
-                        <Grid item xs={6}>
+                    <Grid
+                        item
+                        xs={1}
+                        container
+                        alignItems="flex-end"
+                        spacing={2}
+                    >
+                        <Grid item xs={12} sm={6}>
                             <Fade in={this.state.fade} {...{ timeout: 500 }}>
                                 <Button
                                     fullWidth
@@ -88,7 +100,7 @@ class BioEditor extends Component {
                                 </Button>
                             </Fade>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <Fade in={this.state.fade} {...{ timeout: 750 }}>
                                 <Button
                                     fullWidth
@@ -106,21 +118,36 @@ class BioEditor extends Component {
             return (
                 <Grid
                     container
-                    direction="column"
                     justifyContent="space-between"
-                    sx={{ height: 1, pb: 4 }}
+                    rowSpacing={1}
+                    direction="column"
+                    sx={{ height: 1, flexWrap: "nowrap" }}
                 >
-                    <Grid item>
+                    <Grid item xs={1}>
+                        <Typography variant="h5" component="h1">
+                            Here is my bio!
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={9}>
                         <Fade
                             in={this.state.fade}
                             mountOnEnter
                             {...{ timeout: 500 }}
                         >
                             <Paper
-                                sx={{ p: 1, bgcolor: "#e9e9e9" }}
+                                sx={{
+                                    bgcolor: "#e9e9e9",
+                                    height: 1,
+                                    maxHeight: 262,
+                                    overflow: "auto",
+                                }}
                                 elevation={3}
                             >
-                                <Typography variant="body1" component="p">
+                                <Typography
+                                    variant="body1"
+                                    component="p"
+                                    sx={{ p: 1, overflow: "auto" }}
+                                >
                                     {this.props.bio}
                                 </Typography>
                             </Paper>
@@ -128,6 +155,7 @@ class BioEditor extends Component {
                     </Grid>
                     <Grid
                         item
+                        xs={1}
                         sx={{ width: 1 }}
                         container
                         justifyContent="center"
@@ -135,7 +163,7 @@ class BioEditor extends Component {
                         <Fade
                             in={this.state.fade}
                             mountOnEnter
-                            {...{ timeout: 750 }}
+                            {...{ timeout: 500 }}
                         >
                             <Button
                                 sx={{ width: 1 / 2 }}
@@ -153,20 +181,30 @@ class BioEditor extends Component {
                 <Grid
                     container
                     direction="column"
+                    rowSpacing={1}
                     justifyContent="space-between"
-                    sx={{ height: 1, pb: 4 }}
+                    sx={{ height: 1, flexWrap: "nowrap" }}
                 >
-                    <Grid item>
+                    <Grid item xs={1}>
+                        <Typography variant="h5" component="h1">
+                            Here is my bio!
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={9}>
                         <Fade
                             in={this.state.fade}
                             mountOnEnter
                             {...{ timeout: 500 }}
                         >
                             <Paper
-                                sx={{ p: 1, bgcolor: "#e9e9e9" }}
+                                sx={{ bgcolor: "#e9e9e9", height: 1 }}
                                 elevation={3}
                             >
-                                <Typography variant="body1" component="p">
+                                <Typography
+                                    variant="body1"
+                                    component="p"
+                                    sx={{ p: 1 }}
+                                >
                                     You don't have a bio yet. Add one!
                                 </Typography>
                             </Paper>
@@ -174,6 +212,7 @@ class BioEditor extends Component {
                     </Grid>
                     <Grid
                         item
+                        xs={1}
                         sx={{ width: 1 }}
                         container
                         justifyContent="center"
@@ -181,7 +220,7 @@ class BioEditor extends Component {
                         <Fade
                             in={this.state.fade}
                             mountOnEnter
-                            {...{ timeout: 750 }}
+                            {...{ timeout: 500 }}
                         >
                             <Button
                                 sx={{ width: 1 / 2 }}
@@ -198,14 +237,7 @@ class BioEditor extends Component {
     }
 
     render() {
-        return (
-            <>
-                <Typography variant="h5" component="h1">
-                    Here is my bio!
-                </Typography>
-                {this.renderBioEditor()}
-            </>
-        );
+        return <>{this.renderBioEditor()}</>;
     }
 }
 

@@ -67,6 +67,7 @@ class Uploader extends Component {
                             {...{ timeout: 1000 }}
                         >
                             <Fab
+                                // definir maxWidth e depois text overflow 'elipsis'
                                 variant="extended"
                                 color="primary"
                                 onClick={(e) => this.handleSubmit(e)}

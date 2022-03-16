@@ -1,11 +1,13 @@
 import { Component } from "react";
 import { BrowserRouter, Route } from "react-router-dom";
+import { Grid, Fade } from "@mui/material";
+
 import Logo from "./Logo";
 import Uploader from "./Uploader";
 import Profile from "./Profile";
 import Header from "./Header";
 import FindPeople from "./FindPeople";
-import { Grid } from "@mui/material";
+import OtherProfile from "./OtherProfile";
 
 class App extends Component {
     constructor() {
@@ -62,6 +64,12 @@ class App extends Component {
                         </Grid>
 
                         <Grid item xs={12} container justifyContent="center">
+                            <Route exact path="/user/:otherUserId">
+                                <OtherProfile />
+                            </Route>
+                        </Grid>
+
+                        <Grid item xs={12} container justifyContent="center">
                             <Route exact path="/">
                                 <Profile
                                     first={this.state.first}
@@ -72,13 +80,13 @@ class App extends Component {
                                     toggleUploader={this.toggleUploader}
                                     setBio={this.setBio}
                                 />
-                                {this.state.uploaderVisible && (
-                                    <Uploader
-                                        toggleUploader={this.toggleUploader}
-                                        updateProfilePic={this.updateProfilePic}
-                                    />
-                                )}
                             </Route>
+                            {this.state.uploaderVisible && (
+                                <Uploader
+                                    toggleUploader={this.toggleUploader}
+                                    updateProfilePic={this.updateProfilePic}
+                                />
+                            )}
                         </Grid>
                     </BrowserRouter>
                 </Grid>

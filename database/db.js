@@ -100,7 +100,7 @@ module.exports.addUpdateBio = (bio, userId) => {
 
 module.exports.getLastUsers = () => {
     return db.query(`
-        SELECT id, first, last, profile_pic, bio
+        SELECT id, first, last, profile_pic AS "profilePic", bio
         FROM users
         ORDER BY id DESC
         LIMIT 6
@@ -110,12 +110,23 @@ module.exports.getLastUsers = () => {
 module.exports.getSearchedUsers = (searchTerm) => {
     return db.query(
         `
-        SELECT id, first, last, profile_pic, bio
+        SELECT id, first, last, profile_pic AS "profilePic", bio
         FROM users
         WHERE first ILIKE $1
         ORDER BY first DESC
         LIMIT 6
     `,
         [searchTerm + "%"]
+    );
+};
+
+module.exports.getOtherUser = (userId) => {
+    return db.query(
+        `
+        SELECT id, first, last, profile_pic AS "profilePic", bio
+        FROM users
+        WHERE id = $1
+    `,
+        [userId]
     );
 };

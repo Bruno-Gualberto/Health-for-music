@@ -263,12 +263,28 @@ app.get("/last-users.json", async (req, res) => {
 
 app.get("/searched-users", async (req, res) => {
     try {
-        let searchedUsers = await db
+        const searchedUsers = await db
             .getSearchedUsers(req.query.search)
             .then(({ rows }) => rows);
         return res.json({ users: searchedUsers, error: false });
     } catch (err) {
         console.log("error on getting last users: ", err);
+        return res.json({ error: true });
+    }
+});
+
+app.get("/other-user/:otherUserId.json", async (req, res) => {
+    try {
+        const otherUserInfo = await db
+            .getOtherUser(req.params.otherUserId)
+            .then(({ rows }) => rows[0]);
+        return res.json({
+            ...otherUserInfo,
+            loggedUserId: req.session.userId,
+            error: false,
+        });
+    } catch (err) {
+        console.log("error on getting other user info: ", err);
         return res.json({ error: true });
     }
 });
