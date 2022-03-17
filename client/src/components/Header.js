@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useHistory } from "react-router-dom";
 import Logo from "./Logo";
 import {
     AppBar,
@@ -5,7 +7,17 @@ import {
     Typography,
     useScrollTrigger,
     Slide,
+    Box,
+    Tooltip,
+    IconButton,
+    Avatar,
+    Menu,
+    MenuItem,
+    Button,
+    Divider,
+    ListItemIcon,
 } from "@mui/material";
+import { Logout, Search, AccountCircle } from "@mui/icons-material";
 
 function HideOnScroll(props) {
     const { children } = props;
@@ -19,15 +31,108 @@ function HideOnScroll(props) {
 }
 
 const Header = (props) => {
+    const [anchorElUser, setAnchorElUser] = useState(null);
+    const [loggedOut, setLoggedOut] = useState(false);
+
+    const history = useHistory();
+
+    const handleOpenUserMenu = (event) => {
+        setAnchorElUser(event.currentTarget);
+    };
+
+    const handleCloseUserMenu = () => {
+        setAnchorElUser(null);
+    };
+
+    // const handleLogout = () => {
+    //     fetch("/logout")
+    //         .then((resp) => resp.json())
+    //         .then(() => {
+    //             setLoggedOut(true);
+    //             history.push("/");
+    //         });
+    // };
+
     return (
         <>
             <HideOnScroll {...props}>
                 <AppBar position="sticky" elevation={0} sx={{ mb: 2 }}>
                     <Toolbar>
                         <Logo height="50px" />
-                        <Typography sx={{ ml: 1 }} variant="h6" component="h6">
-                            Socialnetwork
-                        </Typography>
+                        <Box sx={{ flexGrow: 1 }}>
+                            <Typography
+                                sx={{ ml: 3 }}
+                                variant="h6"
+                                component="h6"
+                            >
+                                {props.loggedIn
+                                    ? `Welcome to Socialnetwork, ${props.first}!`
+                                    : "Socialnetwork"}
+                            </Typography>
+                        </Box>
+                        {props.loggedIn && (
+                            <Box sx={{ flexGrow: 0 }}>
+                                <Tooltip title="Open settings">
+                                    <IconButton
+                                        onClick={handleOpenUserMenu}
+                                        sx={{ p: 0 }}
+                                    >
+                                        <Avatar
+                                            alt={`${props.first} ${props.last}`}
+                                            src={
+                                                props.profilePic ||
+                                                "/default-picture.png"
+                                            }
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+                                <Menu
+                                    keepMounted
+                                    sx={{ mt: 5 }}
+                                    open={Boolean(anchorElUser)}
+                                    onClose={handleCloseUserMenu}
+                                    anchorOrigin={{
+                                        vertical: "top",
+                                        horizontal: "right",
+                                    }}
+                                    transformOrigin={{
+                                        vertical: "top",
+                                        horizontal: "right",
+                                    }}
+                                >
+                                    <MenuItem onClick={handleCloseUserMenu}>
+                                        <Button href="/">
+                                            <ListItemIcon>
+                                                <AccountCircle />
+                                            </ListItemIcon>
+                                            Profile
+                                        </Button>
+                                    </MenuItem>
+
+                                    <MenuItem onClick={handleCloseUserMenu}>
+                                        <Button href="/find-people">
+                                            <ListItemIcon>
+                                                <Search />
+                                            </ListItemIcon>
+                                            Search People
+                                        </Button>
+                                    </MenuItem>
+
+                                    <Divider />
+
+                                    <MenuItem>
+                                        <Button
+                                        // onClick={handleLogout}
+                                        >
+                                            <ListItemIcon>
+                                                <Logout />
+                                            </ListItemIcon>
+                                            Logout
+                                        </Button>
+                                    </MenuItem>
+                                </Menu>
+                            </Box>
+                        )}
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>

@@ -9,7 +9,7 @@ import { Grid } from "@mui/material";
 const Welcome = () => {
     return (
         <div className="welcome-container">
-            <Header />
+            <Header loggedIn={false} />
             <Grid container justifyContent="center">
                 <Logo height="150px" />
 

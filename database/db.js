@@ -130,3 +130,45 @@ module.exports.getOtherUser = (userId) => {
         [userId]
     );
 };
+
+module.exports.getFriendship = (loggedUserId, otherUserId) => {
+    return db.query(
+        `
+        SELECT sender_id AS "senderId", recipient_id AS "recipientId", accepted
+        FROM friendships
+        WHERE (recipient_id = $1 AND sender_id = $2)
+        OR (recipient_id = $2 AND sender_id = $1);
+    `,
+        [loggedUserId, otherUserId]
+    );
+};
+
+module.exports.sendRequest = (loggedUserId, otherUserId) => {
+    return db.query(
+        `
+        INSERT INTO friendships (sender_id, recipient_id, accepted)
+        VALUES ($1, $2, false)
+    `,
+        [loggedUserId, otherUserId]
+    );
+};
+module.exports.acceptRequest = (loggedUserId, otherUserId) => {
+    return db.query(
+        `
+        UPDATE friendships 
+        SET accepted = true
+        WHERE recipient_id = $1 AND sender_id = $2
+    `,
+        [loggedUserId, otherUserId]
+    );
+};
+module.exports.deleteRequest = (loggedUserId, otherUserId) => {
+    return db.query(
+        `
+        DELETE FROM friendships
+        WHERE (recipient_id = $1 AND sender_id = $2)
+        OR (recipient_id = $2 AND sender_id = $1)
+    `,
+        [loggedUserId, otherUserId]
+    );
+};

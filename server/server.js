@@ -278,6 +278,9 @@ app.get("/other-user/:otherUserId.json", async (req, res) => {
         const otherUserInfo = await db
             .getOtherUser(req.params.otherUserId)
             .then(({ rows }) => rows[0]);
+        if (!otherUserInfo) {
+            return res.json({ error: true });
+        }
         return res.json({
             ...otherUserInfo,
             loggedUserId: req.session.userId,
@@ -287,6 +290,65 @@ app.get("/other-user/:otherUserId.json", async (req, res) => {
         console.log("error on getting other user info: ", err);
         return res.json({ error: true });
     }
+});
+
+app.get("/friendship/:otherUserId", async (req, res) => {
+    try {
+        const friendship = await db
+            .getFriendship(req.session.userId, req.params.otherUserId)
+            .then(({ rows }) => rows[0]);
+        if (!friendship) {
+            return res.json({ hasFriendship: false });
+        } else {
+            return res.json({
+                ...friendship,
+                hasFriendship: true,
+                loggedUserId: req.session.userId,
+            });
+        }
+    } catch (err) {
+        console.log("error getting friendships", err);
+        return res.json({ error: true });
+    }
+});
+
+app.post("/friendship-status.json", async (req, res) => {
+    console.log(req.body);
+    const otherUserId = parseInt(req.body.otherUserId);
+
+    if (req.body.action === "SEND-REQUEST") {
+        db.sendRequest(req.session.userId, otherUserId)
+            .then(() => {
+                return res.json({ error: false });
+            })
+            .catch((err) => {
+                console.log("error on friendship requests: ", err);
+                return res.json({ error: true });
+            });
+    } else if (req.body.action === "ACCEPT-REQUEST") {
+        db.acceptRequest(req.session.userId, otherUserId)
+            .then(() => {
+                return res.json({ error: false });
+            })
+            .catch((err) => {
+                console.log("error on friendship requests: ", err);
+                return res.json({ error: true });
+            });
+    } else if (req.body.action === "DELETE-REQUEST") {
+        db.deleteRequest(req.session.userId, otherUserId)
+            .then(() => {
+                return res.json({ error: false });
+            })
+            .catch((err) => {
+                console.log("error on friendship requests: ", err);
+                return res.json({ error: true });
+            });
+    }
+});
+
+app.get("/logout", (req, res) => {
+    delete req.session.userId;
+    return res.json({ loggedOut: true });
 });
 
 app.get("*", function (req, res) {

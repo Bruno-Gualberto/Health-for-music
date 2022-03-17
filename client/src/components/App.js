@@ -50,7 +50,13 @@ class App extends Component {
     render() {
         return (
             <div>
-                <Header />
+                <Header
+                    loggedIn={true}
+                    first={this.state.first}
+                    last={this.state.last}
+                    profilePic={this.state.profilePic}
+                    toggleUploader={this.toggleUploader}
+                />
                 <Grid container justifyContent="center" rowSpacing={2}>
                     <Grid item xs={12} container justifyContent="center">
                         <Logo height="150px" />

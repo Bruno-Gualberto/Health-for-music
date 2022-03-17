@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
+import FriendButton from "./FriendButton";
 
 import { Card, Grid, Fade, Typography, Paper } from "@mui/material";
 
@@ -18,8 +19,6 @@ const OtherProfile = () => {
                 const otherUser = await fetch(
                     `/other-user/${otherUserId}.json`
                 ).then((resp) => resp.json());
-
-                console.log(otherUser.error);
 
                 if (otherUser.error) {
                     setError("😭 Sorry, this user doesn't exist! 😭");
@@ -63,6 +62,7 @@ const OtherProfile = () => {
                                     maxHeight: "350px",
                                 }}
                             />
+                            <FriendButton otherUserId={otherUserId} />
                         </Grid>
                     </Fade>
                     <Fade mountOnEnter in={toFade} {...{ timeout: 1000 }}>
