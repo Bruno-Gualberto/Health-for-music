@@ -104,6 +104,7 @@ class BioEditor extends Component {
                             <Fade in={this.state.fade} {...{ timeout: 750 }}>
                                 <Button
                                     fullWidth
+                                    color="error"
                                     variant="outlined"
                                     onClick={this.closeEditor}
                                 >

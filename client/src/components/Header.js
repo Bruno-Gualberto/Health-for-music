@@ -44,15 +44,6 @@ const Header = (props) => {
         setAnchorElUser(null);
     };
 
-    // const handleLogout = () => {
-    //     fetch("/logout")
-    //         .then((resp) => resp.json())
-    //         .then(() => {
-    //             setLoggedOut(true);
-    //             history.push("/");
-    //         });
-    // };
-
     return (
         <>
             <HideOnScroll {...props}>
@@ -120,10 +111,8 @@ const Header = (props) => {
 
                                     <Divider />
 
-                                    <MenuItem>
-                                        <Button
-                                        // onClick={handleLogout}
-                                        >
+                                    <MenuItem onClick={handleCloseUserMenu}>
+                                        <Button href="/logout">
                                             <ListItemIcon>
                                                 <Logout />
                                             </ListItemIcon>

@@ -313,7 +313,6 @@ app.get("/friendship/:otherUserId", async (req, res) => {
 });
 
 app.post("/friendship-status.json", async (req, res) => {
-    console.log(req.body);
     const otherUserId = parseInt(req.body.otherUserId);
 
     if (req.body.action === "SEND-REQUEST") {
@@ -348,7 +347,7 @@ app.post("/friendship-status.json", async (req, res) => {
 
 app.get("/logout", (req, res) => {
     delete req.session.userId;
-    return res.json({ loggedOut: true });
+    return res.redirect("/");
 });
 
 app.get("*", function (req, res) {

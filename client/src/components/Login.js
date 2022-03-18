@@ -35,7 +35,7 @@ class Login extends Component {
                 .then((resp) => resp.json())
                 .then((data) => {
                     data.success
-                        ? location.reload()
+                        ? location.assign("/")
                         : this.setState({ error: data.error });
                 })
                 .catch((err) => {

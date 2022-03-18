@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 
 const FriendButton = ({ otherUserId }) => {
     const [buttonText, setButtonText] = useState("");
@@ -76,7 +76,8 @@ const FriendButton = ({ otherUserId }) => {
                 otherUserId,
                 action:
                     target.id === "ignoreBtn"
-                        ? FRIENDSHIP_STATUS["PENDING-RECEIVER-IGNORE"].action
+                        ? FRIENDSHIP_STATUS["PENDING-RECEIVER-IGNORE"].action &&
+                          setColor("error")
                         : action,
             }),
         })
@@ -101,12 +102,26 @@ const FriendButton = ({ otherUserId }) => {
             });
     };
 
+    let color = "";
+
+    if (buttonText === "Cancel Friend Request" || buttonText === "Unfriend") {
+        color = "error";
+    } else {
+        color = "primary";
+    }
+
     return (
         <>
-            {err && <p>{err}</p>}
-            <Button onClick={handleClick}>{buttonText}</Button>
+            {err && (
+                <Typography color="error" variant="body1">
+                    {err}
+                </Typography>
+            )}
+            <Button color={color} onClick={handleClick}>
+                {buttonText}
+            </Button>
             {ignoreBtn && (
-                <Button id="ignoreBtn" onClick={handleClick}>
+                <Button id="ignoreBtn" color="error" onClick={handleClick}>
                     {ignoreBtn}
                 </Button>
             )}
