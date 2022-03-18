@@ -5,6 +5,7 @@ const ProfilePic = ({ url, first, last, toggleUploader, width }) => {
             style={{ width: width, objectFit: "cover", maxHeight: "350px" }}
             src={url || "/default-picture.png"}
             alt={`${first} ${last}`}
+            className="hover-profile-pic"
         />
     );
 };
