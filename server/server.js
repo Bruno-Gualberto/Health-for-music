@@ -345,6 +345,18 @@ app.post("/friendship-status.json", async (req, res) => {
     }
 });
 
+app.get("/friends.json", async (req, res) => {
+    try {
+        const allFriendRequests = await db
+            .getAllFriendRequests(req.session.userId)
+            .then(({ rows }) => rows);
+        res.json(allFriendRequests);
+    } catch (err) {
+        console.log("error getting all friend requests", err);
+        return res.json({ error: true });
+    }
+});
+
 app.get("/logout", (req, res) => {
     delete req.session.userId;
     return res.redirect("/");

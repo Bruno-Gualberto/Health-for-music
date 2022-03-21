@@ -8,6 +8,7 @@ import Profile from "./Profile";
 import Header from "./Header";
 import FindPeople from "./FindPeople";
 import OtherProfile from "./OtherProfile";
+import Friends from "./Friends";
 
 class App extends Component {
     constructor() {
@@ -67,15 +68,11 @@ class App extends Component {
                             <Route exact path="/find-people">
                                 <FindPeople />
                             </Route>
-                        </Grid>
 
-                        <Grid item xs={12} container justifyContent="center">
                             <Route exact path="/user/:otherUserId">
                                 <OtherProfile />
                             </Route>
-                        </Grid>
 
-                        <Grid item xs={12} container justifyContent="center">
                             <Route exact path="/">
                                 <Profile
                                     first={this.state.first}
@@ -87,12 +84,17 @@ class App extends Component {
                                     setBio={this.setBio}
                                 />
                             </Route>
+
                             {this.state.uploaderVisible && (
                                 <Uploader
                                     toggleUploader={this.toggleUploader}
                                     updateProfilePic={this.updateProfilePic}
                                 />
                             )}
+
+                            <Route path="/friends">
+                                <Friends />
+                            </Route>
                         </Grid>
                     </BrowserRouter>
                 </Grid>

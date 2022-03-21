@@ -101,6 +101,15 @@ const Header = (props) => {
                                     </MenuItem>
 
                                     <MenuItem onClick={handleCloseUserMenu}>
+                                        <Button href="/friends">
+                                            <ListItemIcon>
+                                                <AccountCircle />
+                                            </ListItemIcon>
+                                            Friends
+                                        </Button>
+                                    </MenuItem>
+
+                                    <MenuItem onClick={handleCloseUserMenu}>
                                         <Button href="/find-people">
                                             <ListItemIcon>
                                                 <Search />

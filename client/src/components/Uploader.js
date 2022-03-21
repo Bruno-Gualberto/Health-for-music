@@ -71,10 +71,21 @@ class Uploader extends Component {
                     >
                         <Grid
                             container
-                            justifyContent="space-between"
+                            justifyContent="center"
                             alignItems="center"
                         >
-                            <Grid item sx={10}>
+                            <Grid item xs={11} sx={{ flexGrow: 1 }}>
+                                <Typography variant="h5" sx={{ mb: 1 }}>
+                                    Add your profile picture here:
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={1}>
+                                <Close
+                                    className="close-icon"
+                                    onClick={this.props.toggleUploader}
+                                />
+                            </Grid>
+                            <Grid item>
                                 <form>
                                     {!this.state.profilePic ? (
                                         <Fab
@@ -130,12 +141,6 @@ class Uploader extends Component {
                                         </Fade>
                                     )}
                                 </form>
-                            </Grid>
-                            <Grid item>
-                                <Close
-                                    className="close-icon"
-                                    onClick={this.props.toggleUploader}
-                                />
                             </Grid>
                         </Grid>
                     </Card>

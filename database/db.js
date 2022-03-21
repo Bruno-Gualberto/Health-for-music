@@ -172,3 +172,17 @@ module.exports.deleteRequest = (loggedUserId, otherUserId) => {
         [loggedUserId, otherUserId]
     );
 };
+
+module.exports.getAllFriendRequests = (userId) => {
+    return db.query(
+        `
+        SELECT users.id, first, last, profile_pic AS "profilePic", accepted
+        FROM friendships
+        JOIN users
+        ON (accepted = false AND recipient_id = $1 AND sender_id = users.id)
+        OR (accepted = true AND recipient_id = $1 AND sender_id = users.id)
+        OR (accepted = true AND sender_id = $1 AND recipient_id = users.id)
+    `,
+        [userId]
+    );
+};
