@@ -28,5 +28,10 @@ body {
     cursor: pointer;
     padding: 5px;
     font-size: 24px;
-    background-color: green;
+    border-radius: 20px;
+    transition: all 0.5s;
+}
+
+.close-icon:hover {
+    background-color: rgba(0, 0, 0, 0.25);
 }

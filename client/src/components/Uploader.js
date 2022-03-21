@@ -65,65 +65,79 @@ class Uploader extends Component {
                 <ClickAwayListener onClickAway={this.props.toggleUploader}>
                     <Card
                         sx={{
-                            width: 1 / 2,
-                            height: 1 / 2,
+                            width: 1 / 4,
+                            p: 2,
                         }}
                     >
-                        <Close
-                            className="close-icon"
-                            onClick={this.props.toggleUploader}
-                        />
-
-                        <form>
-                            {!this.state.profilePic ? (
-                                <Fab
-                                    variant="contained"
-                                    color="primary"
-                                    component="label"
-                                >
-                                    <AddPhotoAlternate />
-                                    <input
-                                        type="file"
-                                        hidden
-                                        name="profilePic"
-                                        onChange={(e) => this.handleChange(e)}
-                                    />
-                                </Fab>
-                            ) : (
-                                <Fade
-                                    in={this.state.transition}
-                                    style={{ transformOrigin: "left center" }}
-                                    {...{ timeout: 1000 }}
-                                >
-                                    <Fab
-                                        // component="div"
-                                        // definir maxWidth e depois text overflow 'elipsis'
-                                        // sx={{
-                                        //     maxWidth: 200,
-                                        //     whiteSpace: "nowrap",
-                                        //     overflow: "ellipsis",
-                                        //     textOverflow: "ellipsis",
-                                        // }}
-                                        variant="extended"
-                                        color="primary"
-                                        onClick={(e) => this.handleSubmit(e)}
-                                    >
-                                        <Upload />
-                                        <div
-                                            style={{
-                                                overflow: "hidden",
-                                                textOverflow: "ellipsis",
-                                                maxWidth: "180px",
-                                            }}
+                        <Grid
+                            container
+                            justifyContent="space-between"
+                            alignItems="center"
+                        >
+                            <Grid item sx={10}>
+                                <form>
+                                    {!this.state.profilePic ? (
+                                        <Fab
+                                            variant="contained"
+                                            color="primary"
+                                            component="label"
                                         >
-                                            <Typography noWrap variant="body2">
-                                                {this.state.profilePic.name}
-                                            </Typography>
-                                        </div>
-                                    </Fab>
-                                </Fade>
-                            )}
-                        </form>
+                                            <AddPhotoAlternate />
+                                            <input
+                                                type="file"
+                                                hidden
+                                                name="profilePic"
+                                                onChange={(e) =>
+                                                    this.handleChange(e)
+                                                }
+                                            />
+                                        </Fab>
+                                    ) : (
+                                        <Fade
+                                            in={this.state.transition}
+                                            style={{
+                                                transformOrigin: "left center",
+                                            }}
+                                            {...{ timeout: 1000 }}
+                                        >
+                                            <Fab
+                                                variant="extended"
+                                                color="primary"
+                                                onClick={(e) =>
+                                                    this.handleSubmit(e)
+                                                }
+                                            >
+                                                <Upload />
+                                                <div
+                                                    style={{
+                                                        overflow: "hidden",
+                                                        textOverflow:
+                                                            "ellipsis",
+                                                        maxWidth: "180px",
+                                                    }}
+                                                >
+                                                    <Typography
+                                                        noWrap
+                                                        variant="body2"
+                                                    >
+                                                        {
+                                                            this.state
+                                                                .profilePic.name
+                                                        }
+                                                    </Typography>
+                                                </div>
+                                            </Fab>
+                                        </Fade>
+                                    )}
+                                </form>
+                            </Grid>
+                            <Grid item>
+                                <Close
+                                    className="close-icon"
+                                    onClick={this.props.toggleUploader}
+                                />
+                            </Grid>
+                        </Grid>
                     </Card>
                 </ClickAwayListener>
             </Grid>
