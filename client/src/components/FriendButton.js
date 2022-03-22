@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button, Typography } from "@mui/material";
+import { PersonAdd, PersonRemove } from "@mui/icons-material";
 
 const FriendButton = ({ otherUserId }) => {
     const [buttonText, setButtonText] = useState("");
@@ -13,11 +14,11 @@ const FriendButton = ({ otherUserId }) => {
             action: "SEND-REQUEST",
         },
         "PENDING-RECEIVER": {
-            btnText: "Accept Friend Request",
+            btnText: "Accept Friend",
             action: "ACCEPT-REQUEST",
         },
         "PENDING-RECEIVER-IGNORE": {
-            btnText: "Ignore Friend Request",
+            btnText: "Ignore Friend",
             action: "DELETE-REQUEST",
         },
         "PENDING-SENDER": {
@@ -103,11 +104,16 @@ const FriendButton = ({ otherUserId }) => {
     };
 
     let color = "";
-
+    let variant = "";
+    let add = true;
     if (buttonText === "Cancel Friend Request" || buttonText === "Unfriend") {
+        variant = "outlined";
         color = "error";
+        add = false;
     } else {
-        color = "primary";
+        variant = "contained";
+        color = "secondary";
+        add = true;
     }
 
     return (
@@ -117,11 +123,23 @@ const FriendButton = ({ otherUserId }) => {
                     {err}
                 </Typography>
             )}
-            <Button color={color} onClick={handleClick}>
+            <Button color={color} variant={variant} onClick={handleClick}>
+                {add ? (
+                    <PersonAdd sx={{ mr: 1 }} />
+                ) : (
+                    <PersonRemove sx={{ mr: 1 }} />
+                )}
                 {buttonText}
             </Button>
             {ignoreBtn && (
-                <Button id="ignoreBtn" color="error" onClick={handleClick}>
+                <Button
+                    sx={{ ml: 1 }}
+                    id="ignoreBtn"
+                    color="error"
+                    variant="outlined"
+                    onClick={handleClick}
+                >
+                    <PersonRemove sx={{ mr: 1 }} />
                     {ignoreBtn}
                 </Button>
             )}

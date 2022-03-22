@@ -6,7 +6,7 @@ import { Card, Grid, Fade } from "@mui/material";
 const Profile = (props) => {
     const [toFade, setToFade] = useState(true);
     return (
-        <Card elevation={2} sx={{ p: 4, width: 2 / 3 }}>
+        <Card elevation={6} sx={{ p: 4, width: 2 / 3 }}>
             <Grid
                 container
                 spacing={2}

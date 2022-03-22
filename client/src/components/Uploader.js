@@ -8,12 +8,14 @@ import {
     ClickAwayListener,
     Typography,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
 class Uploader extends Component {
     constructor(props) {
         super(props);
         this.state = {
             transition: false,
+            loading: false,
         };
     }
 
@@ -26,6 +28,7 @@ class Uploader extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
+        this.setState({ loading: true });
         // append file to FormData that is on state
         // send data to server
         // if success: update profilePic property from the state App via method passed down in props (updateProfilePic)
@@ -69,17 +72,13 @@ class Uploader extends Component {
                             p: 2,
                         }}
                     >
-                        <Grid
-                            container
-                            justifyContent="center"
-                            alignItems="center"
-                        >
+                        <Grid container justifyContent="center">
                             <Grid item xs={11} sx={{ flexGrow: 1 }}>
                                 <Typography variant="h5" sx={{ mb: 1 }}>
                                     Add your profile picture here:
                                 </Typography>
                             </Grid>
-                            <Grid item xs={1}>
+                            <Grid item xs={1} sx={{ mt: "-8px" }}>
                                 <Close
                                     className="close-icon"
                                     onClick={this.props.toggleUploader}
@@ -90,7 +89,7 @@ class Uploader extends Component {
                                     {!this.state.profilePic ? (
                                         <Fab
                                             variant="contained"
-                                            color="primary"
+                                            color="secondary"
                                             component="label"
                                         >
                                             <AddPhotoAlternate />
@@ -111,14 +110,19 @@ class Uploader extends Component {
                                             }}
                                             {...{ timeout: 1000 }}
                                         >
-                                            <Fab
-                                                variant="extended"
-                                                color="primary"
+                                            <LoadingButton
+                                                variant="contained"
+                                                color="secondary"
+                                                loading={this.state.loading}
+                                                loadingPosition="start"
+                                                sx={{ py: 1 }}
+                                                startIcon={
+                                                    <Upload sx={{ mr: 1 }} />
+                                                }
                                                 onClick={(e) =>
                                                     this.handleSubmit(e)
                                                 }
                                             >
-                                                <Upload />
                                                 <div
                                                     style={{
                                                         overflow: "hidden",
@@ -129,7 +133,7 @@ class Uploader extends Component {
                                                 >
                                                     <Typography
                                                         noWrap
-                                                        variant="body2"
+                                                        variant="body1"
                                                     >
                                                         {
                                                             this.state
@@ -137,7 +141,7 @@ class Uploader extends Component {
                                                         }
                                                     </Typography>
                                                 </div>
-                                            </Fab>
+                                            </LoadingButton>
                                         </Fade>
                                     )}
                                 </form>

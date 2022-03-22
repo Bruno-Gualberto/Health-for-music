@@ -126,7 +126,7 @@ class ResetPassword extends Component {
                                     <Button
                                         fullWidth
                                         variant="contained"
-                                        color="primary"
+                                        color="secondary"
                                         onClick={this.handleSubmitEmail}
                                     >
                                         SUBMIT
@@ -201,7 +201,7 @@ class ResetPassword extends Component {
                                     <Button
                                         fullWidth
                                         variant="contained"
-                                        color="primary"
+                                        color="secondary"
                                         onClick={this.handleVerifyAndSave}
                                     >
                                         Save

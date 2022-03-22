@@ -33,7 +33,7 @@ const OtherProfile = () => {
     }, []);
 
     return (
-        <Card elevation={2} sx={{ p: 4, width: 2 / 3 }}>
+        <Card elevation={6} sx={{ p: 4, width: 2 / 3 }}>
             {error ? (
                 <Typography variant="h4" sx={{ textAlign: "center" }}>
                     {error}
@@ -48,7 +48,11 @@ const OtherProfile = () => {
                 >
                     <Fade mountOnEnter in={toFade} {...{ timeout: 1000 }}>
                         <Grid item xs={12} sm={12} md={6}>
-                            <Typography variant="h5" component="h1">
+                            <Typography
+                                variant="h5"
+                                component="h1"
+                                color="white"
+                            >
                                 {userData.first} {userData.last}
                             </Typography>
                             <img
@@ -60,6 +64,8 @@ const OtherProfile = () => {
                                     width: "100%",
                                     objectFit: "cover",
                                     maxHeight: "350px",
+                                    borderRadius: "5px",
+                                    margin: "8px 0",
                                 }}
                             />
                             <FriendButton otherUserId={otherUserId} />
@@ -67,7 +73,12 @@ const OtherProfile = () => {
                     </Fade>
                     <Fade mountOnEnter in={toFade} {...{ timeout: 1000 }}>
                         <Grid item xs={12} sm={12} md={6}>
-                            <Typography variant="h5" component="h1">
+                            <Typography
+                                variant="h5"
+                                component="h1"
+                                sx={{ mb: 1 }}
+                                color="white"
+                            >
                                 {userData.first}'s bio
                             </Typography>
                             <Paper

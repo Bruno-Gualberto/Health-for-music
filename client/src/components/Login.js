@@ -126,7 +126,7 @@ class Login extends Component {
                                     <Button
                                         fullWidth
                                         variant="contained"
-                                        color="primary"
+                                        color="secondary"
                                         onClick={this.handleLogin}
                                     >
                                         Login

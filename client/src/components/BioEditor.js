@@ -64,7 +64,7 @@ class BioEditor extends Component {
                     sx={{ height: 1, flexWrap: "nowrap" }}
                 >
                     <Grid item xs={1}>
-                        <Typography variant="h5" component="h1">
+                        <Typography variant="h5" component="h1" color="white">
                             Here is my bio!
                         </Typography>
                     </Grid>
@@ -93,6 +93,7 @@ class BioEditor extends Component {
                             <Fade in={this.state.fade} {...{ timeout: 500 }}>
                                 <Button
                                     fullWidth
+                                    color="secondary"
                                     variant="contained"
                                     onClick={this.addUpdateBio}
                                 >
@@ -125,7 +126,7 @@ class BioEditor extends Component {
                     sx={{ height: 1, flexWrap: "nowrap" }}
                 >
                     <Grid item xs={1}>
-                        <Typography variant="h5" component="h1">
+                        <Typography variant="h5" component="h1" color="white">
                             Here is my bio!
                         </Typography>
                     </Grid>
@@ -168,6 +169,7 @@ class BioEditor extends Component {
                         >
                             <Button
                                 sx={{ width: 1 / 2 }}
+                                color="secondary"
                                 variant="contained"
                                 onClick={this.showEditor}
                             >
@@ -187,7 +189,7 @@ class BioEditor extends Component {
                     sx={{ height: 1, flexWrap: "nowrap" }}
                 >
                     <Grid item xs={1}>
-                        <Typography variant="h5" component="h1">
+                        <Typography variant="h5" component="h1" color="white">
                             Here is my bio!
                         </Typography>
                     </Grid>
@@ -225,6 +227,7 @@ class BioEditor extends Component {
                         >
                             <Button
                                 sx={{ width: 1 / 2 }}
+                                color="secondary"
                                 variant="contained"
                                 onClick={this.showEditor}
                             >

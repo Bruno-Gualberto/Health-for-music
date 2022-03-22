@@ -139,7 +139,7 @@ class Registration extends Component {
                                     <Button
                                         fullWidth
                                         variant="contained"
-                                        color="primary"
+                                        color="secondary"
                                         onClick={this.handleRegistration}
                                     >
                                         Register

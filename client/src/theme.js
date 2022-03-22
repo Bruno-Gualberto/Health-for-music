@@ -5,26 +5,24 @@ let theme = createTheme({
         MuiCard: {
             styleOverrides: {
                 root: {
-                    backgroundColor: "#fff8cd",
+                    backgroundColor: "#7890a8",
                 },
             },
         },
     },
     palette: {
         primary: {
-            light: "#96b7a2",
-            main: "#829b86",
+            main: "#181848",
         },
         secondary: {
-            light: "#b4b969",
-            main: "#a6aa56",
+            main: "#304878",
         },
         error: {
-            main: "#e35241",
+            main: "#b30e0e",
         },
-        // background: {
-        //     card: "#fff8cd",
-        // },
+        info: {
+            main: "#f0a818",
+        },
     },
 });
 

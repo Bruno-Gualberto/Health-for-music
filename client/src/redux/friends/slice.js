@@ -4,11 +4,20 @@ export default function friendsReducer(friends = [], action) {
         return newFriendRequests;
     } else if (action.type === "friends-and-wannabees/accept") {
         const updatedFriendsList = friends.map((friend) => {
-            console.log("each friend", friend);
-            friend.id == action.payload.id ? (friend.accepted = true) : null;
+            if (friend.id === action.payload.id) {
+                return {
+                    ...friend,
+                    accepted: true,
+                };
+            }
+            return friend;
         });
         return updatedFriendsList;
     } else if (action.type === "friends-and-wannabees/unfriend") {
+        const updatedFriendsList = friends.filter(
+            (friend) => friend.id !== action.payload.id
+        );
+        return updatedFriendsList;
     }
     return friends;
 }

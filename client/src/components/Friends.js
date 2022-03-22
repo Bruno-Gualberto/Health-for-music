@@ -5,6 +5,10 @@ import {
     addFriendRequests,
     deleteRequest,
 } from "../redux/friends/slice";
+import { Link } from "react-router-dom";
+
+import { Grid, Card, Typography, Button } from "@mui/material";
+import { PersonAdd, PersonRemove } from "@mui/icons-material";
 
 const Friends = () => {
     const dispatch = useDispatch();
@@ -52,35 +56,114 @@ const Friends = () => {
         dispatch(makeFriend(id));
     };
 
+    const handleDelete = async (id) => {
+        const response = await fetch("/friendship-status.json", {
+            method: "POST",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({
+                otherUserId: id,
+                action: "DELETE-REQUEST",
+            }),
+        }).then((resp) => resp.json());
+
+        dispatch(deleteRequest(id));
+    };
+
     return (
-        <section>
-            <h1>Friends</h1>
-            {friends &&
-                friends.map((friend) => {
-                    return (
-                        <div key={friend.id}>
-                            friend {friend.first}
-                            <button onClick={() => handleDelete(friend.id)}>
-                                Unfriend
-                            </button>
-                        </div>
-                    );
-                })}
-            <h1>Wannabees</h1>
-            {wannabees &&
-                wannabees.map((wannabee) => {
-                    return (
-                        <div key={wannabee.id}>
-                            wannabee {wannabee.first}
-                            <button onClick={() => handleAccept(wannabee.id)}>
-                                Accept
-                            </button>
-                            <button onClick={() => handleDelete(wannabee.id)}>
-                                Refuse
-                            </button>
-                        </div>
-                    );
-                })}
+        <section style={{ width: "100%" }}>
+            <Typography variant="h4" sx={{ mb: 2 }}>
+                Friends
+            </Typography>
+            <Grid container spacing={4}>
+                {friends &&
+                    friends.map((friend) => {
+                        return (
+                            <Grid item xs={12} sm={6} md={3} key={friend.id}>
+                                <Card elevation={6} sx={{ p: 2 }}>
+                                    <Typography variant="h5" color="white">
+                                        {friend.first} {friend.last}
+                                    </Typography>
+                                    <Link to={`/user/${friend.id}`}>
+                                        <img
+                                            className="hover-profile-pic"
+                                            src={
+                                                friend.profilePic ||
+                                                "/default-picture.png"
+                                            }
+                                            style={{
+                                                objectFit: "cover",
+                                                height: "250px",
+                                                width: "100%",
+                                                margin: "8px 0",
+                                            }}
+                                        />
+                                    </Link>
+                                    <Button
+                                        color="error"
+                                        variant="outlined"
+                                        onClick={() => handleDelete(friend.id)}
+                                    >
+                                        <PersonRemove sx={{ mr: 1 }} />
+                                        Unfriend
+                                    </Button>
+                                </Card>
+                            </Grid>
+                        );
+                    })}
+            </Grid>
+            <Typography variant="h4" sx={{ mt: 3, mb: 2 }}>
+                Pending friend requests
+            </Typography>
+            <Grid container spacing={4}>
+                {wannabees &&
+                    wannabees.map((wannabee) => {
+                        return (
+                            <Grid item xs={12} sm={6} md={3} key={wannabee.id}>
+                                <Card elevation={6} sx={{ p: 2 }}>
+                                    <Typography variant="h5" color="white">
+                                        {wannabee.first} {wannabee.last}
+                                    </Typography>
+                                    <Link to={`/user/${wannabee.id}`}>
+                                        <img
+                                            className="hover-profile-pic"
+                                            src={
+                                                wannabee.profilePic ||
+                                                "/default-picture.png"
+                                            }
+                                            style={{
+                                                objectFit: "cover",
+                                                height: "250px",
+                                                width: "100%",
+                                                margin: "8px 0",
+                                            }}
+                                        />
+                                    </Link>
+                                    <Button
+                                        sx={{ mr: 1 }}
+                                        color="secondary"
+                                        variant="contained"
+                                        onClick={() =>
+                                            handleAccept(wannabee.id)
+                                        }
+                                    >
+                                        <PersonAdd sx={{ mr: 1 }} />
+                                        Accept
+                                    </Button>
+                                    <Button
+                                        color="error"
+                                        variant="outlined"
+                                        onClick={() =>
+                                            handleDelete(wannabee.id)
+                                        }
+                                    >
+                                        <PersonRemove sx={{ mr: 1 }} />
+                                        Refuse
+                                    </Button>
+                                </Card>
+                            </Grid>
+                        );
+                    })}
+            </Grid>
         </section>
     );
 };

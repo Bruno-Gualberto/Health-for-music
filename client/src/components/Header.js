@@ -17,7 +17,7 @@ import {
     Divider,
     ListItemIcon,
 } from "@mui/material";
-import { Logout, Search, AccountCircle } from "@mui/icons-material";
+import { Logout, Search, AccountCircle, People } from "@mui/icons-material";
 
 function HideOnScroll(props) {
     const { children } = props;
@@ -92,7 +92,13 @@ const Header = (props) => {
                                     }}
                                 >
                                     <MenuItem onClick={handleCloseUserMenu}>
-                                        <Button href="/">
+                                        <Button
+                                            href="/"
+                                            sx={{
+                                                width: 1,
+                                                justifyContent: "flex-start",
+                                            }}
+                                        >
                                             <ListItemIcon>
                                                 <AccountCircle />
                                             </ListItemIcon>
@@ -101,16 +107,28 @@ const Header = (props) => {
                                     </MenuItem>
 
                                     <MenuItem onClick={handleCloseUserMenu}>
-                                        <Button href="/friends">
+                                        <Button
+                                            href="/friends"
+                                            sx={{
+                                                width: 1,
+                                                justifyContent: "flex-start",
+                                            }}
+                                        >
                                             <ListItemIcon>
-                                                <AccountCircle />
+                                                <People />
                                             </ListItemIcon>
                                             Friends
                                         </Button>
                                     </MenuItem>
 
                                     <MenuItem onClick={handleCloseUserMenu}>
-                                        <Button href="/find-people">
+                                        <Button
+                                            href="/find-people"
+                                            sx={{
+                                                width: 1,
+                                                justifyContent: "flex-start",
+                                            }}
+                                        >
                                             <ListItemIcon>
                                                 <Search />
                                             </ListItemIcon>
@@ -121,7 +139,13 @@ const Header = (props) => {
                                     <Divider />
 
                                     <MenuItem onClick={handleCloseUserMenu}>
-                                        <Button href="/logout">
+                                        <Button
+                                            href="/logout"
+                                            sx={{
+                                                width: 1,
+                                                justifyContent: "flex-start",
+                                            }}
+                                        >
                                             <ListItemIcon>
                                                 <Logout />
                                             </ListItemIcon>

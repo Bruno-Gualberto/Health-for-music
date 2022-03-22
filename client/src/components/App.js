@@ -64,11 +64,13 @@ class App extends Component {
                     </Grid>
 
                     <BrowserRouter>
-                        <Grid item xs={12} container justifyContent="center">
+                        <Grid item xs={12} container>
                             <Route exact path="/find-people">
                                 <FindPeople />
                             </Route>
+                        </Grid>
 
+                        <Grid item xs={12} container justifyContent="center">
                             <Route exact path="/user/:otherUserId">
                                 <OtherProfile />
                             </Route>
@@ -91,7 +93,8 @@ class App extends Component {
                                     updateProfilePic={this.updateProfilePic}
                                 />
                             )}
-
+                        </Grid>
+                        <Grid item xs={12} container sx={{ px: 3, pb: 3 }}>
                             <Route path="/friends">
                                 <Friends />
                             </Route>
