@@ -8,6 +8,17 @@ const { hash, compare } = require("./bc");
 const cryptoRandomString = require("crypto-random-string");
 const { sendEmail } = require("./ses");
 
+const server = require("http").Server(app);
+const io = require("socket.io")(server, {
+    allowRequest: (req, callback) =>
+        callback(null, req.headers.referer.startsWith("http://localhost:3000")),
+});
+
+const cookieSessionMiddleware = cookieSession({
+    secret: process.env.SECRET || `I'm always angry.`,
+    maxAge: 1000 * 60 * 60 * 24 * 14,
+});
+
 const multer = require("multer");
 const uidSafe = require("uid-safe");
 
@@ -33,13 +44,10 @@ const uploader = multer({
 
 app.use(compression());
 
-app.use(
-    cookieSession({
-        secret: `I'm always angry.`,
-        maxAge: 1000 * 60 * 60 * 24 * 14,
-        sameSite: true,
-    })
-);
+app.use(cookieSessionMiddleware);
+io.use(function (socket, next) {
+    cookieSessionMiddleware(socket.request, socket.request.res, next);
+});
 
 app.use(express.json());
 
@@ -366,6 +374,40 @@ app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "..", "client", "index.html"));
 });
 
-app.listen(process.env.PORT || 3001, function () {
+server.listen(process.env.PORT || 3001, function () {
     console.log("I'm listening.");
+});
+
+io.on("connection", async (socket) => {
+    if (!socket.request.session.userId) {
+        return socket.disconnect(true);
+    }
+
+    const userId = socket.request.session.userId;
+
+    const { rows } = await db.getLatestMessages();
+    socket.emit("latestMessages", rows);
+
+    socket.on("wroteNewMessage", (msg) => {
+        let messageId;
+        let timestamp;
+        db.insertMessage(userId, msg)
+            .then(({ rows }) => {
+                messageId = rows[0].messageId;
+                timestamp = rows[0].timestamp;
+                return db.getMessageSenderById(userId);
+            })
+            .then(({ rows }) => {
+                io.emit("receiveNewMessage", {
+                    first: rows[0].first,
+                    last: rows[0].last,
+                    profilePic: rows[0].profilePic,
+                    messageId,
+                    timestamp,
+                    senderId: userId,
+                    text: msg,
+                });
+            })
+            .catch((err) => console.log("error on new message", err));
+    });
 });

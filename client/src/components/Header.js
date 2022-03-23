@@ -17,7 +17,13 @@ import {
     Divider,
     ListItemIcon,
 } from "@mui/material";
-import { Logout, Search, AccountCircle, People } from "@mui/icons-material";
+import {
+    Logout,
+    Search,
+    AccountCircle,
+    People,
+    Forum,
+} from "@mui/icons-material";
 
 function HideOnScroll(props) {
     const { children } = props;
@@ -133,6 +139,21 @@ const Header = (props) => {
                                                 <Search />
                                             </ListItemIcon>
                                             Search People
+                                        </Button>
+                                    </MenuItem>
+
+                                    <MenuItem onClick={handleCloseUserMenu}>
+                                        <Button
+                                            href="/chat"
+                                            sx={{
+                                                width: 1,
+                                                justifyContent: "flex-start",
+                                            }}
+                                        >
+                                            <ListItemIcon>
+                                                <Forum />
+                                            </ListItemIcon>
+                                            Community chat
                                         </Button>
                                     </MenuItem>
 

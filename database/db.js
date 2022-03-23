@@ -186,3 +186,36 @@ module.exports.getAllFriendRequests = (userId) => {
         [userId]
     );
 };
+
+module.exports.getLatestMessages = () => {
+    return db.query(`
+        SELECT users.first, users.last, users.profile_pic AS "profilePic", messages.msg_sender_id AS "senderId", messages.text, messages.timestamp, messages.id AS "messageId"
+        FROM messages
+        JOIN users
+        ON messages.msg_sender_id = users.id
+        ORDER BY messages.id DESC
+        LIMIT 10
+    `);
+};
+
+module.exports.insertMessage = (userId, text) => {
+    return db.query(
+        `
+        INSERT INTO messages (msg_sender_id, text)
+        VALUES ($1, $2)
+        RETURNING id AS "messageId", timestamp
+    `,
+        [userId, text]
+    );
+};
+
+module.exports.getMessageSenderById = (userId) => {
+    return db.query(
+        `
+        SELECT first, last, profile_pic AS "profilePic"
+        FROM users
+        WHERE id = $1
+    `,
+        [userId]
+    );
+};

@@ -9,6 +9,7 @@ import Header from "./Header";
 import FindPeople from "./FindPeople";
 import OtherProfile from "./OtherProfile";
 import Friends from "./Friends";
+import Chat from "./Chat";
 
 class App extends Component {
     constructor() {
@@ -73,6 +74,10 @@ class App extends Component {
                         <Grid item xs={12} container justifyContent="center">
                             <Route exact path="/user/:otherUserId">
                                 <OtherProfile />
+                            </Route>
+
+                            <Route exact path="/chat">
+                                <Chat />
                             </Route>
 
                             <Route exact path="/">

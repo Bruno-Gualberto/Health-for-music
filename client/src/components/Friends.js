@@ -75,7 +75,11 @@ const Friends = () => {
                 Friends
             </Typography>
             <Grid container spacing={4}>
-                {friends &&
+                {!friends.length ? (
+                    <Typography variant="body1" sx={{ ml: "32px", mt: 2 }}>
+                        You don't have any friends yet ☹️
+                    </Typography>
+                ) : (
                     friends.map((friend) => {
                         return (
                             <Grid item xs={12} sm={6} md={3} key={friend.id}>
@@ -109,13 +113,18 @@ const Friends = () => {
                                 </Card>
                             </Grid>
                         );
-                    })}
+                    })
+                )}
             </Grid>
             <Typography variant="h4" sx={{ mt: 3, mb: 2 }}>
                 Pending friend requests
             </Typography>
             <Grid container spacing={4}>
-                {wannabees &&
+                {!wannabees.length ? (
+                    <Typography variant="body1" sx={{ ml: "32px", mt: 2 }}>
+                        You don't have any friend requests at the moment!
+                    </Typography>
+                ) : (
                     wannabees.map((wannabee) => {
                         return (
                             <Grid item xs={12} sm={6} md={3} key={wannabee.id}>
@@ -162,7 +171,8 @@ const Friends = () => {
                                 </Card>
                             </Grid>
                         );
-                    })}
+                    })
+                )}
             </Grid>
         </section>
     );

@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS reset_codes;
 DROP TABLE IF EXISTS friendships;
+DROP TABLE IF EXISTS messages;
 
 CREATE UNIQUE INDEX ON friendships (least(sender_id, recipient_id), greatest(sender_id, recipient_id));
 
@@ -26,4 +27,11 @@ CREATE TABLE friendships (
     sender_id INT REFERENCES users(id),
     recipient_id INT REFERENCES users(id),
     accepted BOOLEAN
+);
+
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+    msg_sender_id INT REFERENCES users(id),
+    text VARCHAR NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
