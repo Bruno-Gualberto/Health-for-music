@@ -281,7 +281,10 @@ app.get("/searched-users", async (req, res) => {
     }
 });
 
+// let friendId;
+
 app.get("/other-user/:otherUserId.json", async (req, res) => {
+    // friendId = req.params.otherUserId;
     try {
         const otherUserInfo = await db
             .getOtherUser(req.params.otherUserId)
@@ -378,6 +381,8 @@ server.listen(process.env.PORT || 3001, function () {
     console.log("I'm listening.");
 });
 
+const privateChatIds = {};
+
 io.on("connection", async (socket) => {
     if (!socket.request.session.userId) {
         return socket.disconnect(true);
@@ -409,5 +414,29 @@ io.on("connection", async (socket) => {
                 });
             })
             .catch((err) => console.log("error on new message", err));
+    });
+
+    privateChatIds[socket.id] = userId;
+    console.log("privateChatIds", privateChatIds);
+
+    const { rows: allPrivMsgs } = await db.getPrivateMsgs(userId);
+    socket.emit("allPrivMsgs", allPrivMsgs);
+
+    socket.on("newPrivMsg", ({ newPrivMsg, friendId }) => {
+        db.addNewPrivMsg(newPrivMsg, userId, friendId)
+            .then(({ rows }) => {
+                for (const prop in privateChatIds) {
+                    if (privateChatIds[prop] === friendId) {
+                        io.to(prop).emit("receivedNewPrivMsg", rows[0]);
+                    }
+                }
+                socket.emit("receivedNewPrivMsg", rows[0]);
+            })
+            .catch((err) => console.log("error oon new private message", err));
+    });
+
+    socket.on("disconnect", () => {
+        delete privateChatIds[socket.id];
+        console.log(privateChatIds);
     });
 });

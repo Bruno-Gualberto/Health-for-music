@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import FriendButton from "./FriendButton";
+import PrivateChat from "./PrivateChat";
 
-import { Card, Grid, Fade, Typography, Paper } from "@mui/material";
+import { Card, Grid, Fade, Typography, Paper, Button } from "@mui/material";
 
 const OtherProfile = () => {
-    const [toFade, setToFade] = useState(true);
+    const toFade = true;
     const [userData, setUserData] = useState({});
     const [error, setError] = useState();
+    const [privateChat, setPrivateChat] = useState(false);
+    const [isFriend, setIsFriend] = useState(false);
 
     const { otherUserId } = useParams();
     const history = useHistory();
@@ -26,11 +29,20 @@ const OtherProfile = () => {
                     history.push("/");
                 } else {
                     setUserData({ ...otherUser });
+
+                    const data = await fetch(`/friendship/${otherUserId}`);
+                    const resp = await data.json();
+
+                    setIsFriend(resp.hasFriendship);
                 }
             }
         })();
         return () => (abort = true);
     }, []);
+
+    const togglePrivateChat = () => {
+        setPrivateChat(!privateChat);
+    };
 
     return (
         <Card elevation={6} sx={{ p: 4, width: 2 / 3 }}>
@@ -65,41 +77,61 @@ const OtherProfile = () => {
                                     objectFit: "cover",
                                     maxHeight: "350px",
                                     borderRadius: "5px",
-                                    margin: "8px 0",
+                                    margin: "8px 0 4px",
                                 }}
                             />
                             <FriendButton otherUserId={otherUserId} />
-                        </Grid>
-                    </Fade>
-                    <Fade mountOnEnter in={toFade} {...{ timeout: 1000 }}>
-                        <Grid item xs={12} sm={12} md={6}>
-                            <Typography
-                                variant="h5"
-                                component="h1"
-                                sx={{ mb: 1 }}
-                                color="white"
-                            >
-                                {userData.first}'s bio
-                            </Typography>
-                            <Paper
-                                sx={{
-                                    bgcolor: "#e9e9e9",
-                                    maxHeight: 353,
-                                    overflow: "auto",
-                                }}
-                                elevation={3}
-                            >
-                                <Typography
-                                    variant="body1"
-                                    component="p"
-                                    sx={{ p: 1, overflow: "auto" }}
+                            {isFriend && (
+                                <Button
+                                    sx={{ ml: 1 }}
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={togglePrivateChat}
                                 >
-                                    {userData.bio ||
-                                        `${userData.first} doesn't have a bio yet!`}
-                                </Typography>
-                            </Paper>
+                                    {!privateChat ? "Open chat" : "Close chat"}
+                                </Button>
+                            )}
                         </Grid>
                     </Fade>
+                    <Grid item xs={12} sm={12} md={6}>
+                        {!privateChat ? (
+                            <Fade in={toFade} {...{ timeout: 1000 }}>
+                                <div>
+                                    <Typography
+                                        variant="h5"
+                                        component="h1"
+                                        sx={{ mb: 1 }}
+                                        color="white"
+                                    >
+                                        {userData.first}'s bio
+                                    </Typography>
+                                    <Paper
+                                        sx={{
+                                            bgcolor: "#e9e9e9",
+                                            maxHeight: 353,
+                                            overflow: "auto",
+                                        }}
+                                        elevation={3}
+                                    >
+                                        <Typography
+                                            variant="body1"
+                                            component="p"
+                                            sx={{ p: 1, overflow: "auto" }}
+                                        >
+                                            {userData.bio ||
+                                                `${userData.first} doesn't have a bio yet!`}
+                                        </Typography>
+                                    </Paper>
+                                </div>
+                            </Fade>
+                        ) : (
+                            <PrivateChat
+                                first={userData.first}
+                                strFriendId={otherUserId}
+                                loggedUserId={userData.loggedUserId}
+                            />
+                        )}
+                    </Grid>
                 </Grid>
             )}
         </Card>

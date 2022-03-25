@@ -219,3 +219,27 @@ module.exports.getMessageSenderById = (userId) => {
         [userId]
     );
 };
+
+module.exports.getPrivateMsgs = (userId) => {
+    return db.query(
+        `
+        SELECT id, logged_user_id AS "loggedUserId", friend_id AS "friendId", text, timestamp
+        FROM private_messages
+        WHERE (logged_user_id = $1)
+        OR (friend_id = $1)
+        ORDER BY id DESC
+    `,
+        [userId]
+    );
+};
+
+module.exports.addNewPrivMsg = (privMsg, userId, friendId) => {
+    return db.query(
+        `
+        INSERT INTO private_messages (text, logged_user_id, friend_id)
+        VALUES ($1, $2, $3)
+        RETURNING text, logged_user_id AS "loggedUserId", friend_id AS "friendId", id, timestamp
+    `,
+        [privMsg, userId, friendId]
+    );
+};

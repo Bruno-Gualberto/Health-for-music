@@ -1,43 +1,112 @@
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useRef } from "react";
 import { socket } from "../socket";
 
+import { TextField, Typography, Button, Grid, Divider } from "@mui/material";
+import { Send } from "@mui/icons-material";
+
 const Chat = () => {
-    const [newMsg, setNewMsg] = useState("");
+    const inputRef = useRef();
 
     const latestTenMessages = useSelector((state) => {
         return state.messages;
     });
 
-    const handleSubmit = () => {
-        if (!newMsg) {
-            return;
+    let inputRefVal;
+
+    const handleKeyDown = (e) => {
+        inputRefVal = inputRef.current.children[0].children[0].value;
+
+        if (e.key === "Enter" && inputRefVal) {
+            socket.emit("wroteNewMessage", inputRefVal);
+            inputRef.current.children[0].children[0].value = "";
         }
-        socket.emit("wroteNewMessage", newMsg);
     };
 
-    console.log("latest ten messages on chat component: ", latestTenMessages);
-    console.log("new message", newMsg);
+    const handleSubmit = () => {
+        if (inputRefVal) {
+            socket.emit("wroteNewMessage", inputRefVal);
+            inputRef.current.children[0].children[0].value = "";
+        }
+    };
 
     return (
-        <div>
+        <div
+            style={{
+                width: "400px",
+                border: "1px solid #181848",
+                borderRadius: "5px",
+                padding: "0 10px 10px",
+            }}
+        >
             <h1>Community chat</h1>
-            <div style={{ display: "flex", flexDirection: "column-reverse" }}>
+            <Divider />
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column-reverse",
+                    height: "300px",
+                    overflow: "auto",
+                }}
+            >
                 {latestTenMessages &&
-                    latestTenMessages.map((message) => {
-                        return (
-                            <p key={message.messageId}>
-                                {message.first}: {message.text}
-                            </p>
-                        );
-                    })}
+                    latestTenMessages.map((message) => (
+                        <Grid
+                            container
+                            alignItems="center"
+                            key={message.messageId}
+                            sx={{ mb: 1 }}
+                        >
+                            <img
+                                src={
+                                    message.profilePic || "/default-picture.png"
+                                }
+                                style={{
+                                    height: "40px",
+                                    width: "40px",
+                                    objectFit: "cover",
+                                    marginRight: "5px",
+                                    borderRadius: "20px",
+                                }}
+                            />
+                            <div>
+                                <Typography variant="h6">
+                                    {message.first}: {message.text}
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    sx={{ mt: "-5px", color: "#919191" }}
+                                >
+                                    {message.timestamp}
+                                </Typography>
+                            </div>
+                        </Grid>
+                    ))}
             </div>
-            <input
-                type="text"
-                name="chatInput"
-                onChange={({ target }) => setNewMsg(target.value)}
-            />
-            <button onClick={handleSubmit}>SEND</button>
+            <Grid container spacing={1} alignItems="center">
+                <Grid item xs={8}>
+                    <TextField
+                        fullWidth
+                        size="small"
+                        placeholder="Type here"
+                        type="text"
+                        name="chatInput"
+                        ref={inputRef}
+                        onKeyDown={handleKeyDown}
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <Button
+                        sx={{ width: 1 }}
+                        color="secondary"
+                        variant="contained"
+                        endIcon={<Send />}
+                        onClick={handleSubmit}
+                    >
+                        send
+                    </Button>
+                </Grid>
+            </Grid>
         </div>
     );
 };
