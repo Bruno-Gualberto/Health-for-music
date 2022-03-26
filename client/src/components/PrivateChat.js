@@ -47,7 +47,7 @@ const PrivateChat = ({ first, strFriendId, loggedUserId }) => {
     const handleSubmit = () => {
         if (inputRefVal) {
             socket.emit("newPrivMsg", {
-                newPrivMsg: inputRef.current.value,
+                newPrivMsg: inputRefVal,
                 friendId,
             });
             inputRef.current.children[0].children[0].value = "";
