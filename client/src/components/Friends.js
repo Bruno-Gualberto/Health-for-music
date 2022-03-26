@@ -31,7 +31,6 @@ const Friends = () => {
             state.friendsWannabees.filter((friend) => !friend.accepted)
         );
     });
-    console.log("wannabees", wannabees);
 
     // select friends from state
     const friends = useSelector((state) => {
@@ -40,7 +39,6 @@ const Friends = () => {
             state.friendsWannabees.filter((friend) => friend.accepted)
         );
     });
-    console.log("friends", friends);
 
     const handleAccept = async (id) => {
         // make a post to update the db

@@ -33,7 +33,7 @@ const OtherProfile = () => {
                     const data = await fetch(`/friendship/${otherUserId}`);
                     const resp = await data.json();
 
-                    setIsFriend(resp.hasFriendship);
+                    setIsFriend(resp.accepted);
                 }
             }
         })();

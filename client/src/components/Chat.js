@@ -1,11 +1,12 @@
 import { useSelector } from "react-redux";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { socket } from "../socket";
 
 import { TextField, Typography, Button, Grid, Divider } from "@mui/material";
 import { Send } from "@mui/icons-material";
 
 const Chat = () => {
+    const [newMsg, setNewMsg] = useState("");
     const inputRef = useRef();
 
     const latestTenMessages = useSelector((state) => {
@@ -23,9 +24,13 @@ const Chat = () => {
         }
     };
 
+    const handleChange = (target) => {
+        setNewMsg(target.value);
+    };
+
     const handleSubmit = () => {
-        if (inputRefVal) {
-            socket.emit("wroteNewMessage", inputRefVal);
+        if (newMsg) {
+            socket.emit("wroteNewMessage", newMsg);
             inputRef.current.children[0].children[0].value = "";
         }
     };
@@ -93,6 +98,7 @@ const Chat = () => {
                         name="chatInput"
                         ref={inputRef}
                         onKeyDown={handleKeyDown}
+                        onChange={({ target }) => handleChange(target)}
                     />
                 </Grid>
                 <Grid item xs={4}>

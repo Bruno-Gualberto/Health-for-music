@@ -281,10 +281,7 @@ app.get("/searched-users", async (req, res) => {
     }
 });
 
-// let friendId;
-
 app.get("/other-user/:otherUserId.json", async (req, res) => {
-    // friendId = req.params.otherUserId;
     try {
         const otherUserInfo = await db
             .getOtherUser(req.params.otherUserId)

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { socket } from "../socket";
 
@@ -13,6 +13,7 @@ import {
 import { Send } from "@mui/icons-material";
 
 const PrivateChat = ({ first, strFriendId, loggedUserId }) => {
+    const [newMsg, setNewMsg] = useState("");
     const inputRef = useRef();
     const toFade = true;
     const friendId = parseInt(strFriendId);
@@ -44,10 +45,14 @@ const PrivateChat = ({ first, strFriendId, loggedUserId }) => {
         }
     };
 
+    const handleChange = (target) => {
+        setNewMsg(target.value);
+    };
+
     const handleSubmit = () => {
-        if (inputRefVal) {
+        if (newMsg) {
             socket.emit("newPrivMsg", {
-                newPrivMsg: inputRefVal,
+                newPrivMsg: newMsg,
                 friendId,
             });
             inputRef.current.children[0].children[0].value = "";
@@ -110,6 +115,7 @@ const PrivateChat = ({ first, strFriendId, loggedUserId }) => {
                             name="privateChat"
                             ref={inputRef}
                             onKeyDown={handleKeyDown}
+                            onChange={({ target }) => handleChange(target)}
                         />
                     </Grid>
                     <Grid item xs={3}>
