@@ -18,28 +18,28 @@ const cookieSessionMiddleware = cookieSession({
     maxAge: 1000 * 60 * 60 * 24 * 14,
 });
 
-const multer = require("multer");
-const uidSafe = require("uid-safe");
+// const multer = require("multer");
+// const uidSafe = require("uid-safe");
 
-const s3 = require("./s3");
+// const s3 = require("./s3");
 
-const diskStorage = multer.diskStorage({
-    destination: function (req, file, callback) {
-        callback(null, path.join(__dirname, "uploads"));
-    },
-    filename: function (req, file, callback) {
-        uidSafe(24).then((uid) => {
-            callback(null, uid + path.extname(file.originalname));
-        });
-    },
-});
+// const diskStorage = multer.diskStorage({
+//     destination: function (req, file, callback) {
+//         callback(null, path.join(__dirname, "uploads"));
+//     },
+//     filename: function (req, file, callback) {
+//         uidSafe(24).then((uid) => {
+//             callback(null, uid + path.extname(file.originalname));
+//         });
+//     },
+// });
 
-const uploader = multer({
-    storage: diskStorage,
-    limits: {
-        fileSize: 2097152,
-    },
-});
+// const uploader = multer({
+//     storage: diskStorage,
+//     limits: {
+//         fileSize: 2097152,
+//     },
+// });
 
 app.use(compression());
 
@@ -51,6 +51,26 @@ io.use(function (socket, next) {
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "..", "client", "public")));
+
+app.get("/user/id.json", async (req, res) => {
+    res.json({ userId: req.session.userId, doctor: req.session.doctor });
+});
+
+app.post("/add-doctor.json", async (req, res) => {
+    const query = await db.addDoctor();
+    const { rows } = await query;
+    req.session.userId = rows[0].id;
+    req.session.doctor = rows[0].doctor;
+    res.json(rows[0]);
+});
+
+app.post("/add-user.json", async (req, res) => {
+    const query = await db.addUser();
+    const { rows } = await query;
+    req.session.userId = rows[0].id;
+    req.session.doctor = rows[0].doctor;
+    res.json(rows[0]);
+});
 
 // app.get("/logout", (req, res) => {
 //     delete req.session.userId;
