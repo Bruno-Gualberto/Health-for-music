@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import Logo from "./Logo";
+// import Logo from "./Logo";
 import {
     AppBar,
     Toolbar,
@@ -55,7 +55,7 @@ const Header = (props) => {
             <HideOnScroll {...props}>
                 <AppBar position="sticky" elevation={0} sx={{ mb: 2 }}>
                     <Toolbar>
-                        <Logo height="50px" />
+                        {/* <Logo height="50px" /> */}
                         <Box sx={{ flexGrow: 1 }}>
                             <Typography
                                 sx={{ ml: 3 }}
