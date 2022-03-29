@@ -26,7 +26,8 @@ CREATE TABLE articles (
     id SERIAL PRIMARY KEY,
     doc_id INT REFERENCES doctors(id),
     title VARCHAR,
-    content VARCHAR,
+    subtitle VARCHAR,
+    text VARCHAR,
     article_pic VARCHAR,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

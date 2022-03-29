@@ -73,14 +73,28 @@ app.post("/add-user.json", async (req, res) => {
 });
 
 app.get("/user.json", async (req, res) => {
-    if (req.session.doctor === true) {
-        const query = await db.getDoctorById(req.session.userId);
+    try {
+        if (req.session.doctor === true) {
+            const query = await db.getDoctorById(req.session.userId);
+            const { rows } = query;
+            return res.json(rows[0]);
+        } else if (req.session.doctor === false) {
+            const query = await db.getUserById(req.session.userId);
+            const { rows } = query;
+            return res.json(rows[0]);
+        }
+    } catch (err) {
+        console.log("error on GET user.json: ", err);
+    }
+});
+
+app.get("/articles.json", async (req, res) => {
+    try {
+        const query = await db.getArticles();
         const { rows } = query;
-        return res.json(rows[0]);
-    } else if (req.session.doctor === false) {
-        const query = await db.getUserById(req.session.userId);
-        const { rows } = query;
-        return res.json(rows[0]);
+        res.json(rows);
+    } catch (err) {
+        console.log("error on GET /articles.json: ", err);
     }
 });
 

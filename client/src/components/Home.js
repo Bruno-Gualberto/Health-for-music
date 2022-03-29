@@ -3,10 +3,16 @@ import { Box, Typography, Grid, Card, Button, Stack } from "@mui/material";
 const Home = () => {
     return (
         <>
-            <Box sx={{ width: "100%", height: "200px", border: "1px solid" }}>
+            <Box
+                sx={{
+                    width: "99.85%",
+                    height: "200px",
+                    border: "1px solid black",
+                }}
+            >
                 Banner
             </Box>
-            <Box sx={{ px: 6 }}>
+            <Box sx={{ px: 6, mb: 6 }}>
                 <Box
                     sx={{ width: "100%", height: "150px", border: "1px solid" }}
                 >

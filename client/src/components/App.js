@@ -7,6 +7,7 @@ import { userData } from "../redux/userData/slice";
 import Header from "./Header";
 import Home from "./Home";
 import Articles from "./Articles";
+import Footer from "./Footer";
 
 const App = () => {
     const dispatch = useDispatch();
@@ -30,6 +31,7 @@ const App = () => {
                     <Home />
                 </Route>
             </BrowserRouter>
+            <Footer />
         </>
     );
 };

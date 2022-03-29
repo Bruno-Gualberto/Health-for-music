@@ -55,3 +55,18 @@ module.exports.getUserbyId = (userId) => {
         [userId]
     );
 };
+
+module.exports.getArticles = () => {
+    return db.query(`
+        SELECT title, subtitle, article_pic AS "articlePic", articles.id  AS "articleId", doctors.first, doctors.last, doctors.specialties, doctors.id AS "doctorId", (
+            SELECT id FROM articles
+            ORDER BY id ASC
+            LIMIT 1
+        ) AS "lowestId" 
+        FROM articles
+        JOIN doctors
+        ON articles.doc_id = doctors.id
+        ORDER BY articles.id DESC
+        LIMIT 3
+    `);
+};

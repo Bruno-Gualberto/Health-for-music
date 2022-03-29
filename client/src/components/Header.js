@@ -35,7 +35,7 @@ const Header = (props) => {
                 <AppBar
                     position="sticky"
                     elevation={0}
-                    sx={{ px: 3, width: "100%" }}
+                    sx={{ px: 3, width: 1 }}
                 >
                     <Toolbar>
                         <Typography variant="h6" sx={{ flexGrow: 1 }}>
@@ -53,7 +53,10 @@ const Header = (props) => {
                                     <Button sx={{ color: "white" }}>
                                         Doctors
                                     </Button>
-                                    <Button sx={{ color: "white" }}>
+                                    <Button
+                                        href="/logout"
+                                        sx={{ color: "white" }}
+                                    >
                                         Logout
                                     </Button>
                                 </>
