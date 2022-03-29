@@ -7,6 +7,7 @@ import { userData } from "../redux/userData/slice";
 import Header from "./Header";
 import Home from "./Home";
 import Articles from "./Articles";
+import SingleArticle from "./SingleArticle";
 import Footer from "./Footer";
 
 const App = () => {
@@ -24,6 +25,9 @@ const App = () => {
         <>
             <Header />
             <BrowserRouter>
+                <Route exact path="/article/:articleId">
+                    <SingleArticle />
+                </Route>
                 <Route exact path="/articles">
                     <Articles />
                 </Route>

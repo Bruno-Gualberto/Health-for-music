@@ -35,7 +35,7 @@ const Header = (props) => {
                 <AppBar
                     position="sticky"
                     elevation={0}
-                    sx={{ px: 3, width: 1 }}
+                    sx={{ px: 21, width: 1 }}
                 >
                     <Toolbar>
                         <Typography variant="h6" sx={{ flexGrow: 1 }}>

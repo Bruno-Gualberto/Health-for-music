@@ -17,7 +17,7 @@ main {
 }
 
 input[name="findArticles"] {
-    background-color: #e9e9e9;
+    background-color: #ffffff;
     border-radius: 4px;
 }
 
@@ -27,3 +27,8 @@ input[name="findArticles"] {
     object-fit: cover;
     border-radius: 5px;
 }
+
+/* override button contained color secondary hover */
+/* .MuiButton-contained.MuiButton-containedSecondary:hover {
+    background-color: ;
+} */

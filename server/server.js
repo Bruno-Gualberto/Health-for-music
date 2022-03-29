@@ -98,6 +98,17 @@ app.get("/articles.json", async (req, res) => {
     }
 });
 
+app.get("/more-articles/:smallestId.json", async (req, res) => {
+    try {
+        const smallestId = parseInt(req.params.smallestId);
+        const query = await db.getMoreArticles(smallestId);
+        const { rows } = query;
+        res.json(rows);
+    } catch (err) {
+        console.log("error on GET /more-articles/:smallestId.json: ", err);
+    }
+});
+
 app.get("/logout", (req, res) => {
     delete req.session.userId;
     delete req.session.doctor;

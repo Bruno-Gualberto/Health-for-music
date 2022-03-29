@@ -12,7 +12,7 @@ const Home = () => {
             >
                 Banner
             </Box>
-            <Box sx={{ px: 6, mb: 6 }}>
+            <Box sx={{ px: 24, mb: 6 }}>
                 <Box
                     sx={{ width: "100%", height: "150px", border: "1px solid" }}
                 >

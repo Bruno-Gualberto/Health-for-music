@@ -14,22 +14,31 @@ const Articles = () => {
     const [articles, setArticles] = useState([]);
     const [moreButton, setMoreButton] = useState(true);
 
-    const getArticles = async () => {
-        const data = await fetch("/articles.json");
-        const articlesResp = await data.json();
-        setArticles(articlesResp);
-        articlesResp.filter((article) => article.articleId === article.lowestId)
+    useEffect(() => {
+        (async () => {
+            const data = await fetch("/articles.json");
+            const articlesResp = await data.json();
+            setArticles(articlesResp);
+            articlesResp.filter(
+                (article) => article.articleId === article.lowestId
+            ).length
+                ? setMoreButton(false)
+                : setMoreButton(true);
+        })();
+    }, []);
+    const handleClick = async () => {
+        const smallestId = articles[articles.length - 1].articleId;
+        const data = await fetch(`/more-articles/${smallestId}.json`);
+        const moreArticles = await data.json();
+        setArticles([...articles, ...moreArticles]);
+        moreArticles.filter((article) => article.articleId === article.lowestId)
             .length
             ? setMoreButton(false)
             : setMoreButton(true);
     };
-
-    useEffect(() => {
-        getArticles();
-    }, []);
-
+    console.log(articles);
     return (
-        <Stack sx={{ px: 6, minHeight: "83.5vh" }}>
+        <Stack sx={{ px: 24, minHeight: "83.5vh" }}>
             <Typography variant="h3" sx={{ color: "primary.dark", mt: 2 }}>
                 Articles
             </Typography>
@@ -62,7 +71,7 @@ const Articles = () => {
                             color="secondary"
                             variant="contained"
                             fullWidth
-                            sx={{ boxShadow: 2 }}
+                            sx={{ boxShadow: 3 }}
                         >
                             Find articles
                         </Button>
@@ -86,6 +95,7 @@ const Articles = () => {
                     variant="outlined"
                     color="info"
                     sx={{ alignSelf: "center", mb: 2 }}
+                    onClick={handleClick}
                 >
                     More articles
                 </Button>
