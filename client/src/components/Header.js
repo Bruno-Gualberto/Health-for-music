@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 // import Logo from "./Logo";
 import {
@@ -7,23 +8,10 @@ import {
     Typography,
     useScrollTrigger,
     Slide,
-    Box,
-    Tooltip,
-    IconButton,
-    Avatar,
-    Menu,
-    MenuItem,
     Button,
-    Divider,
-    ListItemIcon,
+    Stack,
 } from "@mui/material";
-import {
-    Logout,
-    Search,
-    AccountCircle,
-    People,
-    Forum,
-} from "@mui/icons-material";
+import { Logout, Search, Forum } from "@mui/icons-material";
 
 function HideOnScroll(props) {
     const { children } = props;
@@ -37,145 +25,40 @@ function HideOnScroll(props) {
 }
 
 const Header = (props) => {
-    const [anchorElUser, setAnchorElUser] = useState(null);
+    const userData = useSelector((state) => state.userData);
+
     const [loggedOut, setLoggedOut] = useState(false);
-
-    const history = useHistory();
-
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
-
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
 
     return (
         <>
             <HideOnScroll {...props}>
-                <AppBar position="sticky" elevation={0} sx={{ mb: 2 }}>
+                <AppBar
+                    position="sticky"
+                    elevation={0}
+                    sx={{ px: 3, width: "100%" }}
+                >
                     <Toolbar>
-                        {/* <Logo height="50px" /> */}
-                        <Box sx={{ flexGrow: 1 }}>
-                            <Typography
-                                sx={{ ml: 3 }}
-                                variant="h6"
-                                component="h6"
-                            >
-                                {props.loggedIn
-                                    ? `Welcome to Socialnetwork, ${props.first}!`
-                                    : "Socialnetwork"}
-                            </Typography>
-                        </Box>
-                        {props.loggedIn && (
-                            <Box sx={{ flexGrow: 0 }}>
-                                <Tooltip title="Open settings">
-                                    <IconButton
-                                        onClick={handleOpenUserMenu}
-                                        sx={{ p: 0 }}
+                        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                            LOGO
+                        </Typography>
+                        <Stack direction="row" spacing={2}>
+                            {userData.id && (
+                                <>
+                                    <Button
+                                        href="/articles"
+                                        sx={{ color: "white" }}
                                     >
-                                        <Avatar
-                                            alt={`${props.first} ${props.last}`}
-                                            src={
-                                                props.profilePic ||
-                                                "/default-picture.png"
-                                            }
-                                        />
-                                    </IconButton>
-                                </Tooltip>
-                                <Menu
-                                    keepMounted
-                                    sx={{ mt: 5 }}
-                                    open={Boolean(anchorElUser)}
-                                    onClose={handleCloseUserMenu}
-                                    anchorOrigin={{
-                                        vertical: "top",
-                                        horizontal: "right",
-                                    }}
-                                    transformOrigin={{
-                                        vertical: "top",
-                                        horizontal: "right",
-                                    }}
-                                >
-                                    <MenuItem onClick={handleCloseUserMenu}>
-                                        <Button
-                                            href="/"
-                                            sx={{
-                                                width: 1,
-                                                justifyContent: "flex-start",
-                                            }}
-                                        >
-                                            <ListItemIcon>
-                                                <AccountCircle />
-                                            </ListItemIcon>
-                                            Profile
-                                        </Button>
-                                    </MenuItem>
-
-                                    <MenuItem onClick={handleCloseUserMenu}>
-                                        <Button
-                                            href="/friends"
-                                            sx={{
-                                                width: 1,
-                                                justifyContent: "flex-start",
-                                            }}
-                                        >
-                                            <ListItemIcon>
-                                                <People />
-                                            </ListItemIcon>
-                                            Friends
-                                        </Button>
-                                    </MenuItem>
-
-                                    <MenuItem onClick={handleCloseUserMenu}>
-                                        <Button
-                                            href="/find-people"
-                                            sx={{
-                                                width: 1,
-                                                justifyContent: "flex-start",
-                                            }}
-                                        >
-                                            <ListItemIcon>
-                                                <Search />
-                                            </ListItemIcon>
-                                            Search People
-                                        </Button>
-                                    </MenuItem>
-
-                                    <MenuItem onClick={handleCloseUserMenu}>
-                                        <Button
-                                            href="/chat"
-                                            sx={{
-                                                width: 1,
-                                                justifyContent: "flex-start",
-                                            }}
-                                        >
-                                            <ListItemIcon>
-                                                <Forum />
-                                            </ListItemIcon>
-                                            Community chat
-                                        </Button>
-                                    </MenuItem>
-
-                                    <Divider />
-
-                                    <MenuItem onClick={handleCloseUserMenu}>
-                                        <Button
-                                            href="/logout"
-                                            sx={{
-                                                width: 1,
-                                                justifyContent: "flex-start",
-                                            }}
-                                        >
-                                            <ListItemIcon>
-                                                <Logout />
-                                            </ListItemIcon>
-                                            Logout
-                                        </Button>
-                                    </MenuItem>
-                                </Menu>
-                            </Box>
-                        )}
+                                        Articles
+                                    </Button>
+                                    <Button sx={{ color: "white" }}>
+                                        Doctors
+                                    </Button>
+                                    <Button sx={{ color: "white" }}>
+                                        Logout
+                                    </Button>
+                                </>
+                            )}
+                        </Stack>
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>

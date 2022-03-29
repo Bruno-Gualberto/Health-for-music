@@ -58,7 +58,7 @@ app.get("/user/id.json", async (req, res) => {
 
 app.post("/add-doctor.json", async (req, res) => {
     const query = await db.addDoctor();
-    const { rows } = await query;
+    const { rows } = query;
     req.session.userId = rows[0].id;
     req.session.doctor = rows[0].doctor;
     res.json(rows[0]);
@@ -66,16 +66,29 @@ app.post("/add-doctor.json", async (req, res) => {
 
 app.post("/add-user.json", async (req, res) => {
     const query = await db.addUser();
-    const { rows } = await query;
+    const { rows } = query;
     req.session.userId = rows[0].id;
     req.session.doctor = rows[0].doctor;
     res.json(rows[0]);
 });
 
-// app.get("/logout", (req, res) => {
-//     delete req.session.userId;
-//     return res.redirect("/");
-// });
+app.get("/user.json", async (req, res) => {
+    if (req.session.doctor === true) {
+        const query = await db.getDoctorById(req.session.userId);
+        const { rows } = query;
+        return res.json(rows[0]);
+    } else if (req.session.doctor === false) {
+        const query = await db.getUserById(req.session.userId);
+        const { rows } = query;
+        return res.json(rows[0]);
+    }
+});
+
+app.get("/logout", (req, res) => {
+    delete req.session.userId;
+    delete req.session.doctor;
+    return res.redirect("/");
+});
 
 app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "..", "client", "index.html"));

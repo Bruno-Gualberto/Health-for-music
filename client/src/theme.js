@@ -1,29 +1,23 @@
-// import { createTheme } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 
-// let theme = createTheme({
-//     components: {
-//         MuiCard: {
-//             styleOverrides: {
-//                 root: {
-//                     backgroundColor: "#7890a8",
-//                 },
-//             },
-//         },
-//     },
-//     palette: {
-//         primary: {
-//             main: "#181848",
-//         },
-//         secondary: {
-//             main: "#304878",
-//         },
-//         error: {
-//             main: "#b30e0e",
-//         },
-//         info: {
-//             main: "#f0a818",
-//         },
-//     },
-// });
+let theme = createTheme({
+    palette: {
+        primary: {
+            main: "#91d5cf",
+            dark: "#59bfc6",
+            light: "#b8e0d3",
+            contrastText: "#ffffff",
+        },
+        secondary: {
+            main: "#b8e0d3",
+            contrastText: "#ffffff",
+        },
+        error: {
+            main: "#b30e0e",
+        },
+    },
+});
 
-// export default theme;
+export default theme;
+
+// E3ECD8 - background

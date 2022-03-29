@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { BrowserRouter, Route } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { doctorData, normalUserData } from "../redux/userData/slice";
 import Header from "./Header";
 import {
     Box,
@@ -27,8 +28,6 @@ const Welcome = () => {
                 body: JSON.stringify({ doctor: true }),
             });
             const data = await resp.json();
-            console.log("doctor data: ", data);
-            // put data into redux
             location.assign("/");
         } else {
             const resp = await fetch("/add-user.json", {
@@ -37,8 +36,6 @@ const Welcome = () => {
                 body: JSON.stringify({ doctor: false }),
             });
             const data = await resp.json();
-            console.log("user data: ", data);
-            // put data into redux
             location.assign("/");
         }
     };
@@ -53,6 +50,7 @@ const Welcome = () => {
                         Are you a doctor or a musician?
                     </FormLabel>
                     <RadioGroup
+                        row
                         name="doctor-or-musician"
                         aria-labelledby="doctor-or-musician-label"
                         value={doctor}

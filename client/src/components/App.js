@@ -1,12 +1,37 @@
-import { Component } from "react";
+import { useEffect } from "react";
 import { BrowserRouter, Route } from "react-router-dom";
-import { Grid, Fade } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { userData } from "../redux/userData/slice";
 
 // import Uploader from "./Uploader";
 import Header from "./Header";
+import Home from "./Home";
+import Articles from "./Articles";
 
 const App = () => {
-    return <div>app</div>;
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        (async () => {
+            const resp = await fetch("/user.json");
+            const data = await resp.json();
+            dispatch(userData(data));
+        })();
+    }, []);
+
+    return (
+        <>
+            <Header />
+            <BrowserRouter>
+                <Route exact path="/articles">
+                    <Articles />
+                </Route>
+                <Route exact path="/">
+                    <Home />
+                </Route>
+            </BrowserRouter>
+        </>
+    );
 };
 
 export default App;

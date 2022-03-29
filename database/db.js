@@ -7,7 +7,7 @@ const db = spicedPg(
 
 module.exports.addDoctor = () => {
     return db.query(`
-        INSERT INTO users (first, last, email, address, city, doctor, specialties)
+        INSERT INTO doctors (first, last, email, address, city, doctor, specialties)
         VALUES (
             'Bruno', 
             'Gualberto', 
@@ -32,4 +32,26 @@ module.exports.addUser = () => {
         )
         RETURNING id, doctor
     `);
+};
+
+module.exports.getDoctorById = (userId) => {
+    return db.query(
+        `
+        SELECT * 
+        FROM doctors
+        WHERE id = $1
+    `,
+        [userId]
+    );
+};
+
+module.exports.getUserbyId = (userId) => {
+    return db.query(
+        `
+        SELECT * 
+        FROM users
+        WHERE id = $1
+    `,
+        [userId]
+    );
 };
