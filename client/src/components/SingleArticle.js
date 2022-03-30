@@ -1,13 +1,105 @@
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
+import { Stack, Typography, Box, Button } from "@mui/material";
 // adicionar timestamp no começo do artigo
 // nao fazer modo ediçao nessa pagina
 // editar somente no perfil do medico
 // usar mesmo componente pra criar e editar
 
+// articlePic: null;
+// city: "";
+// doctorPic: null;
+// first: "";
+// last: "";
+// specialties: "";
+// subtitle: "";
+// text: "";
+// timestamp: "2022-03-29T14:26:20.322Z";
+// title: "";
+
 const SingleArticle = () => {
     const { articleId } = useParams();
-    return <div>single article {articleId}</div>;
+    const [article, setArticle] = useState({});
+
+    useEffect(() => {
+        (async () => {
+            const resp = await fetch(`/single-article/${articleId}.json`);
+            const articleInfo = await resp.json();
+            let wholeDate = new Date(articleInfo.timestamp).toDateString();
+            const date = `${wholeDate
+                .split(" ")
+                .splice(2, 1)
+                .join("")} ${wholeDate
+                .split(" ")
+                .splice(1, 1)
+                .join("")} ${wholeDate.split(" ").splice(3, 1).join("")}`;
+            articleInfo.timestamp = date;
+            setArticle(articleInfo);
+        })();
+    }, []);
+    console.log(article);
+    return (
+        <Stack sx={{ px: 24, minHeight: "83.5vh", color: "#818181" }}>
+            <Typography
+                variant="h3"
+                component="h1"
+                sx={{ color: "primary.dark", lineHeight: 1, mt: 2 }}
+            >
+                {article.title}
+            </Typography>
+            <Typography
+                variant="body2"
+                sx={{
+                    fontStyle: "italic",
+                    lineHeight: 1,
+                    mb: 2,
+                }}
+            >
+                Article from {article.timestamp}
+            </Typography>
+
+            <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+                <img
+                    className="small-round-profile-pic"
+                    src={article.doctorPic || "/default-picture.png"}
+                />
+                <Box sx={{ color: "primary.dark" }}>
+                    <Typography sx={{ fontWeight: "medium" }}>
+                        Dr. {article.first} {article.last}
+                    </Typography>
+                    <Typography sx={{ fontWeight: "light" }}>
+                        Specialist in {article.specialties}
+                    </Typography>
+                    <Typography sx={{ fontWeight: "light" }}>
+                        {article.city}
+                    </Typography>
+                </Box>
+            </Stack>
+            <img
+                className="big-article-pic"
+                src={article.articlePic || "/default-img.png"}
+            />
+            <Typography sx={{ fontWeight: "medium", mt: 1, mb: 2 }}>
+                {article.subtitle}
+            </Typography>
+            <Typography sx={{ mb: 4 }}>{article.text}</Typography>
+
+            <Typography variant="h5" sx={{ color: "primary.dark" }}>
+                Do you want to know more about this doctor?
+            </Typography>
+            <Box sx={{ mb: 4, mt: 2 }}>
+                <Button
+                    href={`/doctor/${article.doctorId}`}
+                    sx={{ boxShadow: 3 }}
+                    variant="contained"
+                    color="secondary"
+                >
+                    Visit the doctor's profile
+                </Button>
+            </Box>
+        </Stack>
+    );
 };
 
 export default SingleArticle;

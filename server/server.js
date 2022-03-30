@@ -109,6 +109,58 @@ app.get("/more-articles/:smallestId.json", async (req, res) => {
     }
 });
 
+app.get("/single-article/:articleId.json", async (req, res) => {
+    try {
+        const articleId = parseInt(req.params.articleId);
+        const query = await db.getSingleArticle(articleId);
+        const { rows } = query;
+        res.json(rows[0]);
+    } catch (err) {
+        console.log("error on GET /single-article/:articleId.json", err);
+    }
+});
+
+app.get("/doctor/:doctorId.json", async (req, res) => {
+    try {
+        const doctorId = parseInt(req.params.doctorId);
+        const query = await db.getDoctorById(doctorId);
+        const { rows } = query;
+        res.json(rows[0]);
+    } catch (err) {
+        console.log("error on GET /doctor/:doctorId.json", err);
+    }
+});
+
+app.get("/doctor-articles/:doctorId.json", async (req, res) => {
+    try {
+        const doctorId = parseInt(req.params.doctorId);
+        const query = await db.getDoctorArticles(doctorId);
+        const { rows } = query;
+        res.json(rows);
+    } catch (err) {
+        console.log("error on GET /doctor-articles/:doctorId.json", err);
+    }
+});
+
+app.get(
+    "/more-doctor-articles/:doctorId/:smallestId.json",
+    async (req, res) => {
+        try {
+            // neet to get 2 params from client: doctorId and smallestId
+            // const smallestId = parseInt(req.params.smallestId);
+            // const doctorId = parseInt(req.params.doctorId);
+            // const query = await db.getMoreDoctorArticles(smallestId);
+            // const { rows } = query;
+            console.log(req.params);
+        } catch (err) {
+            console.log(
+                "error on GET /more-doctor-articles/:smallestId.json",
+                err
+            );
+        }
+    }
+);
+
 app.get("/logout", (req, res) => {
     delete req.session.userId;
     delete req.session.doctor;

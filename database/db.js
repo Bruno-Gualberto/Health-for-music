@@ -89,3 +89,63 @@ module.exports.getMoreArticles = (smallestId) => {
         [smallestId]
     );
 };
+
+module.exports.getSingleArticle = (articleId) => {
+    return db.query(
+        `
+        SELECT articles.title, articles.subtitle, articles.text, articles.article_pic AS "articlePic", articles.timestamp, doctors.first, doctors.last, doctors.doctor_pic AS "doctorPic", doctors.city, doctors.specialties, doctors.id AS "doctorId"
+        FROM articles
+        JOIN doctors
+        ON articles.doc_id = doctors.id
+        WHERE articles.id = $1
+    `,
+        [articleId]
+    );
+};
+
+module.exports.getDoctorById = (doctorId) => {
+    return db.query(
+        `
+        SELECT * 
+        FROM doctors
+        WHERE id = $1
+    `,
+        [doctorId]
+    );
+};
+
+module.exports.getDoctorArticles = (doctorId) => {
+    return db.query(
+        `
+        SELECT title, subtitle, article_pic AS "articlePic", id  AS "articleId", (
+            SELECT id FROM articles
+            WHERE doc_id = $1
+            ORDER BY id ASC
+            LIMIT 1
+        ) AS "lowestId" 
+        FROM articles
+        WHERE doc_id = $1
+        ORDER BY id DESC
+        LIMIT 3
+    `,
+        [doctorId]
+    );
+};
+
+module.exports.getMoreDoctorArticles = (doctorId, smallestId) => {
+    return db.query(
+        `
+        SELECT title, subtitle, article_pic AS "articlePic", id  AS "articleId", (
+            SELECT id FROM articles
+            WHERE doc_id = $1
+            ORDER BY id ASC
+            LIMIT 1
+        ) AS "lowestId" 
+        FROM articles
+        WHERE doc_id = $1 AND id < $2
+        ORDER BY id DESC
+        LIMIT 3
+    `,
+        [doctorId, smallestId]
+    );
+};

@@ -10,6 +10,7 @@ import {
     Slide,
     Button,
     Stack,
+    Box,
 } from "@mui/material";
 import { Logout, Search, Forum } from "@mui/icons-material";
 
@@ -38,9 +39,14 @@ const Header = (props) => {
                     sx={{ px: 21, width: 1 }}
                 >
                     <Toolbar>
-                        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                            LOGO
-                        </Typography>
+                        <Box sx={{ flexGrow: 1 }}>
+                            <a href="/">
+                                <img
+                                    style={{ height: "40px" }}
+                                    src="/logo.svg"
+                                />
+                            </a>
+                        </Box>
                         <Stack direction="row" spacing={2}>
                             {userData.id && (
                                 <>

@@ -28,6 +28,19 @@ input[name="findArticles"] {
     border-radius: 5px;
 }
 
+.small-round-profile-pic {
+    height: 75px;
+    width: 75px;
+    object-fit: cover;
+    border-radius: 40px;
+}
+
+.big-article-pic {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
 /* override button contained color secondary hover */
 /* .MuiButton-contained.MuiButton-containedSecondary:hover {
     background-color: ;

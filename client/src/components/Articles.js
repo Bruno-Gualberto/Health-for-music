@@ -36,7 +36,7 @@ const Articles = () => {
             ? setMoreButton(false)
             : setMoreButton(true);
     };
-    console.log(articles);
+
     return (
         <Stack sx={{ px: 24, minHeight: "83.5vh" }}>
             <Typography variant="h3" sx={{ color: "primary.dark", mt: 2 }}>

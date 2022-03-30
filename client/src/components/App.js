@@ -8,6 +8,8 @@ import Header from "./Header";
 import Home from "./Home";
 import Articles from "./Articles";
 import SingleArticle from "./SingleArticle";
+import Doctors from "./Doctors";
+import DoctorProfile from "./DoctorProfile";
 import Footer from "./Footer";
 
 const App = () => {
@@ -25,6 +27,12 @@ const App = () => {
         <>
             <Header />
             <BrowserRouter>
+                <Route exact path="/doctor/:doctorId">
+                    <DoctorProfile />
+                </Route>
+                <Route exact path="/doctors">
+                    <Doctors />
+                </Route>
                 <Route exact path="/article/:articleId">
                     <SingleArticle />
                 </Route>
