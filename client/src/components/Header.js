@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-// import Logo from "./Logo";
+
 import {
     AppBar,
     Toolbar,
@@ -12,7 +11,6 @@ import {
     Stack,
     Box,
 } from "@mui/material";
-import { Logout, Search, Forum } from "@mui/icons-material";
 
 function HideOnScroll(props) {
     const { children } = props;

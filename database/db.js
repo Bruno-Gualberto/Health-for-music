@@ -26,11 +26,27 @@ module.exports.addUser = () => {
         INSERT INTO users (first, last, email, doctor)
         VALUES (
             'Musician',
-            'Guy',
-            'musician@guy.com',
+            'Dude',
+            'musician@dude.com',
             false
         )
         RETURNING id, doctor
+    `);
+};
+
+module.exports.fakeLoginDoctor = () => {
+    return db.query(`
+        SELECT id, doctor
+        FROM doctors
+        WHERE id = 12
+    `);
+};
+
+module.exports.fakeLoginUser = () => {
+    return db.query(`
+        SELECT id, doctor
+        FROM users
+        WHERE id = 2
     `);
 };
 
@@ -45,7 +61,7 @@ module.exports.getDoctorById = (userId) => {
     );
 };
 
-module.exports.getUserbyId = (userId) => {
+module.exports.getUserById = (userId) => {
     return db.query(
         `
         SELECT * 

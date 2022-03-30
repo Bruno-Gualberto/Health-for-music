@@ -1,4 +1,4 @@
-import { Card, Grid, Stack, Typography, Box, Button } from "@mui/material";
+import { Card, Grid, Stack, Typography, Button } from "@mui/material";
 
 const ArticlesList = ({ article }) => {
     return (

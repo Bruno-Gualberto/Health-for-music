@@ -13,7 +13,7 @@ CREATE TABLE doctors (
     doctor_pic VARCHAR,
     specialties VARCHAR(255)
 );
-
+-- add bio into doctors table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     first VARCHAR(255) NOT NULL CHECK (first !=  ''),

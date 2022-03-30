@@ -41,6 +41,20 @@ input[name="findArticles"] {
     object-fit: cover;
 }
 
+.big-round-profile-pic {
+    height: 125px;
+    width: 125px;
+    object-fit: cover;
+    border-radius: 70px;
+}
+
+.fake-map-img {
+    height: 269px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
 /* override button contained color secondary hover */
 /* .MuiButton-contained.MuiButton-containedSecondary:hover {
     background-color: ;

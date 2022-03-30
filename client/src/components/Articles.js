@@ -9,6 +9,7 @@ import {
     TextField,
     Button,
 } from "@mui/material";
+import { KeyboardArrowDown } from "@mui/icons-material";
 
 const Articles = () => {
     const [articles, setArticles] = useState([]);
@@ -38,7 +39,7 @@ const Articles = () => {
     };
 
     return (
-        <Stack sx={{ px: 24, minHeight: "83.5vh" }}>
+        <Stack sx={{ px: 24, mb: 4, minHeight: "83.5vh" }}>
             <Typography variant="h3" sx={{ color: "primary.dark", mt: 2 }}>
                 Articles
             </Typography>
@@ -92,9 +93,10 @@ const Articles = () => {
                 ))}
             {moreButton && (
                 <Button
+                    endIcon={<KeyboardArrowDown />}
                     variant="outlined"
                     color="info"
-                    sx={{ alignSelf: "center", mb: 2 }}
+                    sx={{ alignSelf: "center", mt: 2 }}
                     onClick={handleClick}
                 >
                     More articles

@@ -10,6 +10,7 @@ import Articles from "./Articles";
 import SingleArticle from "./SingleArticle";
 import Doctors from "./Doctors";
 import DoctorProfile from "./DoctorProfile";
+import Profile from "./Profile";
 import Footer from "./Footer";
 
 const App = () => {
@@ -27,6 +28,9 @@ const App = () => {
         <>
             <Header />
             <BrowserRouter>
+                <Route exact path="/profile">
+                    <Profile />
+                </Route>
                 <Route exact path="/doctor/:doctorId">
                     <DoctorProfile />
                 </Route>

@@ -57,18 +57,22 @@ app.get("/user/id.json", async (req, res) => {
 });
 
 app.post("/add-doctor.json", async (req, res) => {
-    const query = await db.addDoctor();
+    // const query = await db.addDoctor();
+    const query = await db.fakeLoginDoctor();
     const { rows } = query;
     req.session.userId = rows[0].id;
     req.session.doctor = rows[0].doctor;
+    console.log("rows[0]", rows[0]);
     res.json(rows[0]);
 });
 
 app.post("/add-user.json", async (req, res) => {
-    const query = await db.addUser();
+    // const query = await db.addUser();
+    const query = await db.fakeLoginUser();
     const { rows } = query;
     req.session.userId = rows[0].id;
     req.session.doctor = rows[0].doctor;
+    console.log("rows[0]", rows[0]);
     res.json(rows[0]);
 });
 
@@ -123,9 +127,11 @@ app.get("/single-article/:articleId.json", async (req, res) => {
 app.get("/doctor/:doctorId.json", async (req, res) => {
     try {
         const doctorId = parseInt(req.params.doctorId);
+        const ownProfile =
+            req.session.doctor && doctorId === req.session.userId;
         const query = await db.getDoctorById(doctorId);
         const { rows } = query;
-        res.json(rows[0]);
+        return res.json({ doctorInfo: rows[0], ownProfile });
     } catch (err) {
         console.log("error on GET /doctor/:doctorId.json", err);
     }
@@ -146,12 +152,11 @@ app.get(
     "/more-doctor-articles/:doctorId/:smallestId.json",
     async (req, res) => {
         try {
-            // neet to get 2 params from client: doctorId and smallestId
-            // const smallestId = parseInt(req.params.smallestId);
-            // const doctorId = parseInt(req.params.doctorId);
-            // const query = await db.getMoreDoctorArticles(smallestId);
-            // const { rows } = query;
-            console.log(req.params);
+            const smallestId = parseInt(req.params.smallestId);
+            const doctorId = parseInt(req.params.doctorId);
+            const query = await db.getMoreDoctorArticles(doctorId, smallestId);
+            const { rows } = query;
+            res.json(rows);
         } catch (err) {
             console.log(
                 "error on GET /more-doctor-articles/:smallestId.json",

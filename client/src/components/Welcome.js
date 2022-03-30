@@ -21,6 +21,7 @@ const Welcome = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // FAKE LOGIN
         if (doctor === "true") {
             const resp = await fetch("/add-doctor.json", {
                 method: "POST",
@@ -42,7 +43,6 @@ const Welcome = () => {
 
     return (
         <div className="welcome-container">
-            {/* <Header loggedIn={false} /> */}
             Welcome to Health for music!
             <Box>
                 <FormControl>
