@@ -1,6 +1,6 @@
 import { Card, Grid, Stack, Typography, Button } from "@mui/material";
 
-const ArticlesList = ({ article }) => {
+const ArticlesList = ({ article, editMode }) => {
     return (
         <Card elevation={3} sx={{ mb: 2, p: 2 }}>
             <Grid container columnSpacing={2}>
@@ -10,48 +10,74 @@ const ArticlesList = ({ article }) => {
                         src={article.articlePic || "/default-img.png"}
                     />
                 </Grid>
-                <Grid item xs={8}>
-                    <Stack sx={{ height: "100%" }}>
+                <Grid item xs container>
+                    <Grid item xs={10}>
                         <Typography variant="h5" sx={{ color: "primary.dark" }}>
                             {article.title}
                         </Typography>
                         <Typography sx={{ color: "#818181" }}>
                             {article.subtitle}
                         </Typography>
-                        <Stack
-                            justifyContent="flex-end"
-                            sx={{ height: "100%" }}
-                        >
-                            <Typography
-                                variant="subtitle2"
-                                sx={{ lineHeight: 1, color: "#818181" }}
-                            >
-                                Doctor {article.first} {article.last}
-                            </Typography>
-                            <Typography
-                                variant="body2"
-                                sx={{ color: "#818181" }}
-                            >
-                                Specialist in {article.specialties}
-                            </Typography>
-                        </Stack>
-                    </Stack>
-                </Grid>
-                <Grid
-                    item
-                    xs
-                    container
-                    alignItems="flex-end"
-                    justifyContent="flex-end"
-                >
-                    <Button
-                        color="secondary"
-                        href={`/article/${article.articleId}`}
-                        variant="contained"
-                        sx={{ boxShadow: 3 }}
+                    </Grid>
+                    <Grid item xs={2}></Grid>
+
+                    <Grid
+                        item
+                        xs={4}
+                        container
+                        direction="column"
+                        justifyContent="flex-end"
                     >
-                        Read more
-                    </Button>
+                        <Typography
+                            variant="subtitle2"
+                            sx={{ lineHeight: 1, color: "#818181" }}
+                        >
+                            Doctor {article.first} {article.last}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#818181" }}>
+                            Specialist in {article.specialties}
+                        </Typography>
+                    </Grid>
+                    <Grid
+                        item
+                        xs={8}
+                        container
+                        alignItems="flex-end"
+                        justifyContent="flex-end"
+                    >
+                        {editMode ? (
+                            <Stack
+                                direction="row"
+                                alignItems="flex-end"
+                                justifyContent="flex-end"
+                                spacing={1}
+                            >
+                                <Button
+                                    color="secondary"
+                                    variant="outlined"
+                                    disableElevation
+                                >
+                                    Delete
+                                </Button>
+                                <Button
+                                    color="secondary"
+                                    variant="contained"
+                                    disableElevation
+                                >
+                                    Edit article
+                                </Button>
+                            </Stack>
+                        ) : (
+                            <Button
+                                color="secondary"
+                                href={`/article/${article.articleId}`}
+                                variant="contained"
+                                disableElevation
+                            >
+                                Read more
+                            </Button>
+                        )}
+                    </Grid>
                 </Grid>
             </Grid>
         </Card>
