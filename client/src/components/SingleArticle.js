@@ -2,21 +2,6 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import { Stack, Typography, Box, Button } from "@mui/material";
-// adicionar timestamp no começo do artigo
-// nao fazer modo ediçao nessa pagina
-// editar somente no perfil do medico
-// usar mesmo componente pra criar e editar
-
-// articlePic: null;
-// city: "";
-// doctorPic: null;
-// first: "";
-// last: "";
-// specialties: "";
-// subtitle: "";
-// text: "";
-// timestamp: "2022-03-29T14:26:20.322Z";
-// title: "";
 
 const SingleArticle = () => {
     const { articleId } = useParams();
@@ -38,7 +23,7 @@ const SingleArticle = () => {
             setArticle(articleInfo);
         })();
     }, []);
-    console.log(article);
+
     return (
         <Stack sx={{ px: 24, minHeight: "83.5vh", color: "#818181" }}>
             <Typography

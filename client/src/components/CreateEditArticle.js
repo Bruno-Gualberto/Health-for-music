@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
@@ -11,7 +11,6 @@ import {
     Card,
     CircularProgress,
 } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
 
 const CreateEditArticle = () => {
     const modules = {
@@ -39,7 +38,23 @@ const CreateEditArticle = () => {
     const [articlePic, setArticlePic] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [editMode, setEditMode] = useState(false);
     const history = useHistory();
+    const { articleId } = useParams();
+
+    useEffect(() => {
+        if (articleId) {
+            setEditMode(true);
+            (async () => {
+                const resp = await fetch(`/edit-article/${articleId}`);
+                const article = await resp.json();
+
+                setTitle(article.title);
+                setSubtitle(article.subtitle);
+                setText(article.text);
+            })();
+        }
+    }, []);
 
     const handleQuillChange = (value) => {
         setText(value);
@@ -61,27 +76,65 @@ const CreateEditArticle = () => {
         e.preventDefault();
         setLoading(true);
 
-        const fd = new FormData();
-        fd.append("title", title);
-        fd.append("subtitle", subtitle);
-        fd.append("text", text);
-        fd.append("file", articlePic);
+        if (!editMode) {
+            const fd = new FormData();
+            fd.append("title", title);
+            fd.append("subtitle", subtitle);
+            fd.append("text", text);
+            fd.append("file", articlePic);
 
-        const resp = await fetch("/add-new-article.json", {
-            method: "POST",
-            body: fd,
-        });
+            const resp = await fetch("/add-new-article.json", {
+                method: "POST",
+                body: fd,
+            });
 
-        const data = await resp.json();
+            const data = await resp.json();
 
-        if (data.error) {
-            setError(data.error);
+            if (data.error) {
+                setError(data.error);
+                setLoading(false);
+            } else {
+                history.push(`/article/${data.articleId}`);
+            }
         } else {
-            history.push(`/article/${data.articleId}`);
+            if (articlePic) {
+                const fd = new FormData();
+                fd.append("title", title);
+                fd.append("subtitle", subtitle);
+                fd.append("text", text);
+                fd.append("file", articlePic);
+                fd.append("articleId", articleId);
+
+                const resp = await fetch("/edit-article-with-pic.json", {
+                    method: "POST",
+                    body: fd,
+                });
+                const data = await resp.json();
+
+                if (data.error) {
+                    setError(data.error);
+                    setLoading(false);
+                } else {
+                    history.push(`/article/${data.articleId}`);
+                }
+            } else {
+                const resp = await fetch("/edit-article-text.json", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ title, subtitle, text, articleId }),
+                });
+                const data = await resp.json();
+
+                if (data.error) {
+                    setError(data.error);
+                    setLoading(false);
+                } else {
+                    history.push(`/article/${data.articleId}`);
+                }
+            }
         }
     };
 
-    // ver se tem algo nos params e caso nao tenha, create mode, caso tenha, edit mode
     return (
         <Stack
             sx={{ px: 24, mb: 4, minHeight: "83.5vh", color: "primary.dark" }}
@@ -141,7 +194,9 @@ const CreateEditArticle = () => {
                     />
 
                     <Typography sx={{ mb: 2 }}>
-                        Upload image to the article
+                        {!editMode
+                            ? "Upload image to the article"
+                            : "Change image to the article"}
                     </Typography>
                     <Stack direction="row" justifyContent="space-between">
                         <Button
@@ -185,7 +240,7 @@ const CreateEditArticle = () => {
                                 color="secondary"
                                 onClick={(e) => handleSubmit(e)}
                             >
-                                publish article
+                                {!editMode ? "publish article" : "save article"}
                             </Button>
                         ) : (
                             <CircularProgress color="secondary" />

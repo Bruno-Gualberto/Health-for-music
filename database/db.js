@@ -176,3 +176,44 @@ module.exports.addArticle = (doctorId, title, subtitle, text, url) => {
         [doctorId, title, subtitle, text, url]
     );
 };
+
+module.exports.getArticleForEdit = (articleId) => {
+    return db.query(
+        `
+        SELECT title, subtitle, text
+        FROM articles
+        WHERE id = $1
+    `,
+        [articleId]
+    );
+};
+
+module.exports.updateArticleWithPic = (
+    articleId,
+    title,
+    subtitle,
+    text,
+    articlePic
+) => {
+    return db.query(
+        `
+        UPDATE articles
+        SET title = $2, subtitle = $3, text = $4, article_pic = $5
+        WHERE id = $1
+        RETURNING id AS "articleId"
+    `,
+        [articleId, title, subtitle, text, articlePic]
+    );
+};
+
+module.exports.updateArticleText = (articleId, title, subtitle, text) => {
+    return db.query(
+        `
+        UPDATE articles
+        SET title = $2, subtitle = $3, text = $4
+        WHERE id = $1
+        RETURNING id AS "articleId"
+    `,
+        [articleId, title, subtitle, text]
+    );
+};

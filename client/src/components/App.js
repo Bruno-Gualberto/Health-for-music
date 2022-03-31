@@ -29,6 +29,9 @@ const App = () => {
         <>
             <Header />
             <BrowserRouter>
+                <Route exact path="/create-edit-article/:articleId">
+                    <CreateEditArticle />
+                </Route>
                 <Route exact path="/create-edit-article">
                     <CreateEditArticle />
                 </Route>

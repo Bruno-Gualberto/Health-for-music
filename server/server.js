@@ -172,7 +172,7 @@ function hasAllFields(req, res, next) {
     let { title, subtitle, text } = req.body;
     if (!title || !subtitle || !text) {
         return res.json({
-            error: "You must fill in all fields to add an article.",
+            error: "You must fill in all fields to publish an article.",
         });
     } else {
         next();
@@ -206,6 +206,63 @@ app.post(
         }
     }
 );
+
+app.get("/edit-article/:articleId", async (req, res) => {
+    const articleId = parseInt(req.params.articleId);
+
+    try {
+        const query = await db.getArticleForEdit(articleId);
+        const { rows } = query;
+        res.json(rows[0]);
+    } catch (err) {
+        console.log("error on GET /edit-article/:articleId", err);
+    }
+});
+
+app.post(
+    "/edit-article-with-pic.json",
+    uploader.single("file"),
+    hasAllFields,
+    s3.upload,
+    async (req, res) => {
+        let { title, subtitle, text } = req.body;
+        const articleId = parseInt(req.body.articleId);
+
+        let url = `https://s3.amazonaws.com/buckethealthformusic/${req.file.filename}`;
+        try {
+            const query = await db.updateArticleWithPic(
+                articleId,
+                title,
+                subtitle,
+                text,
+                url
+            );
+            const { rows } = query;
+            return res.json(rows[0]);
+        } catch (err) {
+            console.log("error on POST /edit-article-with-pic.json", err);
+            return res.sendStatus(500);
+        }
+    }
+);
+
+app.post("/edit-article-text.json", hasAllFields, async (req, res) => {
+    let { title, subtitle, text, articleId } = req.body;
+    articleId = parseInt(articleId);
+    try {
+        const query = await db.updateArticleText(
+            articleId,
+            title,
+            subtitle,
+            text
+        );
+        const { rows } = query;
+        return res.json(rows[0]);
+    } catch (err) {
+        console.log("error on POST /edit-article-text.json", err);
+        return res.sendStatus(500);
+    }
+});
 
 app.get("/logout", (req, res) => {
     delete req.session.userId;

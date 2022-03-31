@@ -60,6 +60,7 @@ const ArticlesList = ({ article, editMode }) => {
                                     Delete
                                 </Button>
                                 <Button
+                                    href={`/create-edit-article/${article.articleId}`}
                                     color="secondary"
                                     variant="contained"
                                     disableElevation
