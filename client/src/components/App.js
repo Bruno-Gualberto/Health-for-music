@@ -11,6 +11,7 @@ import SingleArticle from "./SingleArticle";
 import Doctors from "./Doctors";
 import DoctorProfile from "./DoctorProfile";
 import Profile from "./Profile";
+import CreateEditArticle from "./CreateEditArticle";
 import Footer from "./Footer";
 
 const App = () => {
@@ -28,6 +29,9 @@ const App = () => {
         <>
             <Header />
             <BrowserRouter>
+                <Route exact path="/create-edit-article">
+                    <CreateEditArticle />
+                </Route>
                 <Route exact path="/profile">
                     <Profile />
                 </Route>

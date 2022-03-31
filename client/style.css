@@ -55,6 +55,10 @@ input[name="findArticles"] {
     border-radius: 5px;
 }
 
+.article-text-container > * {
+    margin: 0;
+}
+
 /* override button contained color secondary hover */
 /* .MuiButton-contained.MuiButton-containedSecondary:hover {
     background-color: ;

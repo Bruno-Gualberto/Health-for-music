@@ -18,28 +18,28 @@ const cookieSessionMiddleware = cookieSession({
     maxAge: 1000 * 60 * 60 * 24 * 14,
 });
 
-// const multer = require("multer");
-// const uidSafe = require("uid-safe");
+const multer = require("multer");
+const uidSafe = require("uid-safe");
 
-// const s3 = require("./s3");
+const s3 = require("./s3");
 
-// const diskStorage = multer.diskStorage({
-//     destination: function (req, file, callback) {
-//         callback(null, path.join(__dirname, "uploads"));
-//     },
-//     filename: function (req, file, callback) {
-//         uidSafe(24).then((uid) => {
-//             callback(null, uid + path.extname(file.originalname));
-//         });
-//     },
-// });
+const diskStorage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, path.join(__dirname, "uploads"));
+    },
+    filename: function (req, file, callback) {
+        uidSafe(24).then((uid) => {
+            callback(null, uid + path.extname(file.originalname));
+        });
+    },
+});
 
-// const uploader = multer({
-//     storage: diskStorage,
-//     limits: {
-//         fileSize: 2097152,
-//     },
-// });
+const uploader = multer({
+    storage: diskStorage,
+    limits: {
+        fileSize: 2097152,
+    },
+});
 
 app.use(compression());
 
@@ -162,6 +162,47 @@ app.get(
                 "error on GET /more-doctor-articles/:smallestId.json",
                 err
             );
+        }
+    }
+);
+
+// ADD NEW ARTICLE WITH PICTURE
+
+function hasAllFields(req, res, next) {
+    let { title, subtitle, text } = req.body;
+    if (!title || !subtitle || !text) {
+        return res.json({
+            error: "You must fill in all fields to add an article.",
+        });
+    } else {
+        next();
+    }
+}
+
+app.post(
+    "/add-new-article.json",
+    uploader.single("file"),
+    hasAllFields,
+    s3.upload,
+    async (req, res) => {
+        let { title, subtitle, text } = req.body;
+        // title, subtitle and text are in req.body
+        let url = `https://s3.amazonaws.com/buckethealthformusic/${req.file.filename}`;
+        // the url must be:
+        // `https://s3.amazonaws.com/Name-BUCKET/${req.file.filename}`
+        try {
+            const query = await db.addArticle(
+                req.session.userId,
+                title,
+                subtitle,
+                text,
+                url
+            );
+            const { rows } = query;
+            return res.json(rows[0]);
+        } catch (err) {
+            console.log("error on POST /add-new-article.json", err);
+            return res.sendStatus(500);
         }
     }
 );

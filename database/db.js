@@ -165,3 +165,14 @@ module.exports.getMoreDoctorArticles = (doctorId, smallestId) => {
         [doctorId, smallestId]
     );
 };
+
+module.exports.addArticle = (doctorId, title, subtitle, text, url) => {
+    return db.query(
+        `
+        INSERT INTO articles (doc_id, title, subtitle, text, article_pic)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING id AS "articleId"
+    `,
+        [doctorId, title, subtitle, text, url]
+    );
+};

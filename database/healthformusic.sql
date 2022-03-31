@@ -25,7 +25,7 @@ CREATE TABLE users (
 CREATE TABLE articles (
     id SERIAL PRIMARY KEY,
     doc_id INT REFERENCES doctors(id),
-    title VARCHAR,
+    title VARCHAR(50),
     subtitle VARCHAR,
     text VARCHAR,
     article_pic VARCHAR,

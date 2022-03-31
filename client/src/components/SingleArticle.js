@@ -53,7 +53,8 @@ const SingleArticle = () => {
                 sx={{
                     fontStyle: "italic",
                     lineHeight: 1,
-                    mb: 2,
+                    mt: 1,
+                    mb: 3,
                 }}
             >
                 Article from {article.timestamp}
@@ -80,10 +81,15 @@ const SingleArticle = () => {
                 className="big-article-pic"
                 src={article.articlePic || "/default-img.png"}
             />
-            <Typography sx={{ fontWeight: "medium", mt: 1, mb: 2 }}>
+            <Typography sx={{ fontWeight: "medium", mt: 1, mb: 3 }}>
                 {article.subtitle}
             </Typography>
-            <Typography sx={{ mb: 4 }}>{article.text}</Typography>
+            <Typography sx={{ mb: 4 }}>
+                <div
+                    className="article-text-container"
+                    dangerouslySetInnerHTML={{ __html: article.text }}
+                />
+            </Typography>
 
             <Typography variant="h5" sx={{ color: "primary.dark" }}>
                 Do you want to know more about this doctor?
