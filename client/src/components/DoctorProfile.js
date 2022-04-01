@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { useParams, useHistory } from "react-router-dom";
 
 import ArticlesList from "./ArticlesList";
@@ -51,6 +52,8 @@ const DoctorProfile = () => {
         })();
     }, []);
 
+    const isDoctor = useSelector((state) => state.userData.doctor);
+
     const handleClick = async () => {
         const smallestId = articles[articles.length - 1].articleId;
         const data = await fetch(
@@ -96,8 +99,7 @@ const DoctorProfile = () => {
                                         A little about the doctor:
                                     </Typography>
                                     <Typography sx={{ color: "#818181" }}>
-                                        {doctor.bio ||
-                                            "Max 255 characters: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec nibh viverra, sollicitudin velit sit amet, interdum massa. Phasellus ut nulla pulvinar erat sodales pharetra vel blandit purus. Vestibulum ut ante nisl. Nam venenati."}
+                                        {doctor.bio}
                                     </Typography>
                                 </Box>
                             </Stack>
@@ -130,7 +132,7 @@ const DoctorProfile = () => {
                             >
                                 <Circle sx={{ color: "primary.dark" }} />
                                 <Typography sx={{ color: "#818181" }}>
-                                    {doctor.phone || "+49 1234567890"}
+                                    {doctor.phone}
                                 </Typography>
                             </Stack>
                             <Stack
@@ -144,14 +146,17 @@ const DoctorProfile = () => {
                                     {doctor.address}, {doctor.cityAndCountry}
                                 </Typography>
                             </Stack>
-                            <Button
-                                disableElevation
-                                fullWidth
-                                variant="contained"
-                                color="secondary"
-                            >
-                                Open private chat
-                            </Button>
+                            {!isDoctor && (
+                                <Button
+                                    href={`/private-chat/${doctorId}`}
+                                    disableElevation
+                                    fullWidth
+                                    variant="contained"
+                                    color="secondary"
+                                >
+                                    Open private chat
+                                </Button>
+                            )}
                         </Card>
                     </Grid>
                     <Grid item xs={8}>

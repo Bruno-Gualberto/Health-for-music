@@ -9,7 +9,7 @@ import * as immutableState from "redux-immutable-state-invariant";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { Provider } from "react-redux";
 import reducer from "./redux/reducer";
-// import { init } from "./socket";
+import { init } from "./socket";
 
 const store = createStore(
     reducer,
@@ -27,7 +27,7 @@ fetch("/user/id.json")
                 document.querySelector("main")
             );
         } else {
-            // init(store);
+            init(store);
             ReactDOM.render(
                 <Provider store={store}>
                     <ThemeProvider theme={theme}>

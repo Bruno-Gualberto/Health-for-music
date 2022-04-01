@@ -53,13 +53,6 @@ const ArticlesList = ({ article, editMode }) => {
                                 spacing={1}
                             >
                                 <Button
-                                    color="secondary"
-                                    variant="outlined"
-                                    disableElevation
-                                >
-                                    Delete
-                                </Button>
-                                <Button
                                     href={`/create-edit-article/${article.articleId}`}
                                     color="secondary"
                                     variant="contained"

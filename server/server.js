@@ -81,15 +81,9 @@ app.post("/add-user.json", async (req, res) => {
 
 app.get("/user.json", async (req, res) => {
     try {
-        if (req.session.doctor === true) {
-            const query = await db.getDoctorById(req.session.userId);
-            const { rows } = query;
-            return res.json(rows[0]);
-        } else if (req.session.doctor === false) {
-            const query = await db.getUserById(req.session.userId);
-            const { rows } = query;
-            return res.json(rows[0]);
-        }
+        const query = await db.getUserById(req.session.userId);
+        const { rows } = query;
+        return res.json(rows[0]);
     } catch (err) {
         console.log("error on GET user.json: ", err);
     }
@@ -162,14 +156,12 @@ app.get(
             res.json(rows);
         } catch (err) {
             console.log(
-                "error on GET /more-doctor-articles/:smallestId.json",
+                "error on GET /more-doctor-articles/:doctorId/:smallestId.json",
                 err
             );
         }
     }
 );
-
-// ADD NEW ARTICLE WITH PICTURE
 
 function hasAllFields(req, res, next) {
     let { title, subtitle, text } = req.body;
@@ -377,6 +369,41 @@ app.post(
     }
 );
 
+app.get("/doctor-own-articles.json", async (req, res) => {
+    try {
+        const query = await db.getDoctorArticles(req.session.userId);
+        const { rows } = query;
+        res.json(rows);
+    } catch (err) {
+        console.log("error on GET /doctor-own-articles.json", err);
+    }
+});
+
+app.get("/more-doctor-articles/:smallestId.json", async (req, res) => {
+    try {
+        const smallestId = parseInt(req.params.smallestId);
+        const query = await db.getMoreDoctorArticles(
+            req.session.userId,
+            smallestId
+        );
+        const { rows } = query;
+        res.json(rows);
+    } catch (err) {
+        console.log("error on GET /more-doctor-articles/:smallestId.json", err);
+    }
+});
+
+app.get("/other-user/:otherUserId.json", async (req, res) => {
+    try {
+        const otherUserId = parseInt(req.params.otherUserId);
+        const query = await db.getOtherUser(otherUserId);
+        const { rows } = query;
+        res.json(rows[0]);
+    } catch (err) {
+        console.log("error on GET /other-user.json", err);
+    }
+});
+
 app.get("/logout", (req, res) => {
     delete req.session.userId;
     delete req.session.doctor;
@@ -391,36 +418,36 @@ server.listen(process.env.PORT || 3001, function () {
     console.log("I'm listening.");
 });
 
-// const privateChatIds = {};
+const privateChatIds = {};
 
-// io.on("connection", async (socket) => {
-//     if (!socket.request.session.userId) {
-//         return socket.disconnect(true);
-//     }
+io.on("connection", async (socket) => {
+    if (!socket.request.session.userId) {
+        return socket.disconnect(true);
+    }
 
-//     const userId = socket.request.session.userId;
+    const userId = socket.request.session.userId;
 
-//     privateChatIds[socket.id] = userId;
-//     console.log("privateChatIds", privateChatIds);
+    privateChatIds[socket.id] = userId;
+    console.log("privateChatIds", privateChatIds);
 
-//     const { rows: allPrivMsgs } = await db.getPrivateMsgs(userId);
-//     socket.emit("allPrivMsgs", allPrivMsgs);
+    const { rows: allPrivMsgs } = await db.getPrivateMsgs(userId);
+    socket.emit("allPrivMsgs", allPrivMsgs);
 
-//     socket.on("newPrivMsg", ({ newPrivMsg, friendId }) => {
-//         db.addNewPrivMsg(newPrivMsg, userId, friendId)
-//             .then(({ rows }) => {
-//                 for (const prop in privateChatIds) {
-//                     if (privateChatIds[prop] === friendId) {
-//                         io.to(prop).emit("receivedNewPrivMsg", rows[0]);
-//                     }
-//                 }
-//                 socket.emit("receivedNewPrivMsg", rows[0]);
-//             })
-//             .catch((err) => console.log("error oon new private message", err));
-//     });
+    socket.on("newPrivMsg", ({ newPrivMsg, otherUserId }) => {
+        db.addNewPrivMsg(newPrivMsg, userId, otherUserId)
+            .then(({ rows }) => {
+                for (const prop in privateChatIds) {
+                    if (privateChatIds[prop] === otherUserId) {
+                        io.to(prop).emit("receivedNewPrivMsg", rows[0]);
+                    }
+                }
+                socket.emit("receivedNewPrivMsg", rows[0]);
+            })
+            .catch((err) => console.log("error oon new private message", err));
+    });
 
-//     socket.on("disconnect", () => {
-//         delete privateChatIds[socket.id];
-//         console.log(privateChatIds);
-//     });
-// });
+    socket.on("disconnect", () => {
+        delete privateChatIds[socket.id];
+        console.log(privateChatIds);
+    });
+});

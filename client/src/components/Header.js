@@ -62,7 +62,10 @@ const Header = (props) => {
                                     >
                                         Articles
                                     </Button>
-                                    <Button sx={{ color: "white" }}>
+                                    <Button
+                                        href="/doctors"
+                                        sx={{ color: "white" }}
+                                    >
                                         Doctors
                                     </Button>
                                     <Button

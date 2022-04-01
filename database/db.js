@@ -7,7 +7,7 @@ const db = spicedPg(
 
 module.exports.addDoctor = () => {
     return db.query(`
-        INSERT INTO doctors (first, last, email, address, city_country, phone, bio, doctor, specialties)
+        INSERT INTO users (first, last, email, address, city_country, phone, bio, doctor, specialties)
         VALUES (
             'Spider', 
             'Doctor', 
@@ -17,7 +17,7 @@ module.exports.addDoctor = () => {
             '+49 1234567890',
             'I studied in Brooklin, friend of the neighbourhood and nothing to be suspicious about.',
             true,
-            'hand'
+            'Hand'
         )
         RETURNING id, doctor
     `);
@@ -39,7 +39,7 @@ module.exports.addUser = () => {
 module.exports.fakeLoginDoctor = () => {
     return db.query(`
         SELECT id, doctor
-        FROM doctors
+        FROM users
         WHERE id = 1
     `);
 };
@@ -48,25 +48,14 @@ module.exports.fakeLoginUser = () => {
     return db.query(`
         SELECT id, doctor
         FROM users
-        WHERE id = 1
+        WHERE id = 2
     `);
-};
-
-module.exports.getDoctorById = (userId) => {
-    return db.query(
-        `
-        SELECT id, first, last, email, address, city_country AS cityAndCountry, doctor, doctor_pic AS "doctorPic", specialties, phone, bio
-        FROM doctors
-        WHERE id = $1
-    `,
-        [userId]
-    );
 };
 
 module.exports.getUserById = (userId) => {
     return db.query(
         `
-        SELECT * 
+        SELECT id, first, last, email, address, city_country AS "cityAndCountry", doctor, profile_pic AS "doctorPic", specialties, phone, bio
         FROM users
         WHERE id = $1
     `,
@@ -76,14 +65,14 @@ module.exports.getUserById = (userId) => {
 
 module.exports.getArticles = () => {
     return db.query(`
-        SELECT title, subtitle, article_pic AS "articlePic", articles.id  AS "articleId", doctors.first, doctors.last, doctors.specialties, doctors.id AS "doctorId", (
+        SELECT title, subtitle, article_pic AS "articlePic", articles.id  AS "articleId", users.first, users.last, users.specialties, users.id AS "doctorId", (
             SELECT id FROM articles
             ORDER BY id ASC
             LIMIT 1
         ) AS "lowestId" 
         FROM articles
-        JOIN doctors
-        ON articles.doc_id = doctors.id
+        JOIN users
+        ON articles.doc_id = users.id
         ORDER BY articles.id DESC
         LIMIT 3
     `);
@@ -92,14 +81,14 @@ module.exports.getArticles = () => {
 module.exports.getMoreArticles = (smallestId) => {
     return db.query(
         `
-        SELECT title, subtitle, article_pic AS "articlePic", articles.id  AS "articleId", doctors.first, doctors.last, doctors.specialties, doctors.id AS "doctorId", (
+        SELECT title, subtitle, article_pic AS "articlePic", articles.id  AS "articleId", users.first, users.last, users.specialties, users.id AS "doctorId", (
             SELECT id FROM articles
             ORDER BY id ASC
             LIMIT 1
         ) AS "lowestId" 
         FROM articles
-        JOIN doctors
-        ON articles.doc_id = doctors.id
+        JOIN users
+        ON articles.doc_id = users.id
         WHERE articles.id < $1
         ORDER BY articles.id DESC
         LIMIT 3
@@ -111,10 +100,10 @@ module.exports.getMoreArticles = (smallestId) => {
 module.exports.getSingleArticle = (articleId) => {
     return db.query(
         `
-        SELECT articles.title, articles.subtitle, articles.text, articles.article_pic AS "articlePic", articles.timestamp, doctors.first, doctors.last, doctors.doctor_pic AS "doctorPic", doctors.city_country AS "cityAndCountry", doctors.specialties, doctors.id AS "doctorId"
+        SELECT articles.title, articles.subtitle, articles.text, articles.article_pic AS "articlePic", articles.timestamp, users.first, users.last, users.profile_pic AS "doctorPic", users.city_country AS "cityAndCountry", users.specialties, users.id AS "doctorId"
         FROM articles
-        JOIN doctors
-        ON articles.doc_id = doctors.id
+        JOIN users
+        ON articles.doc_id = users.id
         WHERE articles.id = $1
     `,
         [articleId]
@@ -124,8 +113,8 @@ module.exports.getSingleArticle = (articleId) => {
 module.exports.getDoctorById = (doctorId) => {
     return db.query(
         `
-        SELECT id, first, last, email, address, city_country AS "cityAndCountry", phone, bio, doctor, doctor_pic AS "doctorPic", specialties
-        FROM doctors
+        SELECT id, first, last, email, address, city_country AS "cityAndCountry", phone, bio, doctor, profile_pic AS "doctorPic", specialties
+        FROM users
         WHERE id = $1
     `,
         [doctorId]
@@ -234,10 +223,10 @@ module.exports.updateProfileWithPic = (
 ) => {
     return db.query(
         `
-        UPDATE doctors
-        SET first = $2, last = $3, specialties = $4, email = $5, phone = $6, address = $7, city_country = $8, bio = $9, doctor_pic = $10
+        UPDATE users
+        SET first = $2, last = $3, specialties = $4, email = $5, phone = $6, address = $7, city_country = $8, bio = $9, profile_pic = $10
         WHERE id = $1
-        RETURNING first, last, specialties, email, phone, address, city_country AS "cityAndCountry", bio, doctor_pic AS "doctorPic"
+        RETURNING first, last, specialties, email, phone, address, city_country AS "cityAndCountry", bio, profile_pic AS "doctorPic"
     `,
         [
             doctorId,
@@ -267,10 +256,10 @@ module.exports.updateProfileText = (
 ) => {
     return db.query(
         `
-        UPDATE doctors
+        UPDATE users
         SET first = $2, last = $3, specialties = $4, email = $5, phone = $6, address = $7, city_country = $8, bio = $9
         WHERE id = $1
-        RETURNING first, last, specialties, email, phone, address, city_country AS "cityAndCountry", bio, doctor_pic AS "doctorPic"
+        RETURNING first, last, specialties, email, phone, address, city_country AS "cityAndCountry", bio, profile_pic AS "doctorPic"
     `,
         [
             doctorId,
@@ -283,5 +272,40 @@ module.exports.updateProfileText = (
             cityAndCountry,
             bio,
         ]
+    );
+};
+
+module.exports.getOtherUser = (otherUserId) => {
+    return db.query(
+        `
+        SELECT first, last, email, profile_pic AS "doctorPic", id
+        FROM users
+        WHERE id = $1
+    `,
+        [otherUserId]
+    );
+};
+
+module.exports.getPrivateMsgs = (userId) => {
+    return db.query(
+        `
+        SELECT id, logged_user_id AS "loggedUserId", other_user_id AS "otherUserId", text, timestamp
+        FROM private_messages
+        WHERE (logged_user_id = $1)
+        OR (other_user_id = $1)
+        ORDER BY id DESC
+    `,
+        [userId]
+    );
+};
+
+module.exports.addNewPrivMsg = (privMsg, userId, otherUserId) => {
+    return db.query(
+        `
+        INSERT INTO private_messages (text, logged_user_id, other_user_id)
+        VALUES ($1, $2, $3)
+        RETURNING text, logged_user_id AS "loggedUserId", other_user_id AS "otherUserId", id, timestamp
+    `,
+        [privMsg, userId, otherUserId]
     );
 };

@@ -100,6 +100,7 @@ const Home = () => {
                                         find together.
                                     </Typography>
                                     <Button
+                                        href="/doctors"
                                         disableElevation
                                         color="secondary"
                                         variant="contained"

@@ -3,7 +3,6 @@ import { BrowserRouter, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { userData } from "../redux/userData/slice";
 
-// import Uploader from "./Uploader";
 import Header from "./Header";
 import Home from "./Home";
 import Articles from "./Articles";
@@ -12,6 +11,7 @@ import Doctors from "./Doctors";
 import DoctorProfile from "./DoctorProfile";
 import Profile from "./Profile";
 import CreateEditArticle from "./CreateEditArticle";
+import PrivateChat from "./PrivateChat";
 import Footer from "./Footer";
 
 const App = () => {
@@ -29,6 +29,9 @@ const App = () => {
         <>
             <Header />
             <BrowserRouter>
+                <Route exact path="/private-chat/:otherUserId">
+                    <PrivateChat />
+                </Route>
                 <Route exact path="/create-edit-article/:articleId">
                     <CreateEditArticle />
                 </Route>

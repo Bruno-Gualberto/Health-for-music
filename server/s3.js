@@ -16,7 +16,9 @@ const s3 = new aws.S3({
 module.exports.upload = (req, res, next) => {
     if (!req.file) {
         console.log("Multer failed!");
-        return res.sendStatus(500);
+        return res.json({
+            error: "You must provide an image to publish your article.",
+        });
     }
 
     const { filename, mimetype, size, path } = req.file;

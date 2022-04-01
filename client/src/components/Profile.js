@@ -32,6 +32,8 @@ const Profile = () => {
     const [editMode, setEditMode] = useState(false);
     const [error, setError] = useState("");
     const [pic, setPic] = useState("");
+    const [articles, setArticles] = useState([]);
+    const [moreButton, setMoreButton] = useState(true);
 
     let {
         first,
@@ -44,6 +46,17 @@ const Profile = () => {
         bio,
         doctorPic,
     } = inputsInfo;
+
+    const formatArticles = (array, doc) => {
+        return array.map((item) => {
+            return {
+                ...item,
+                first: doc.first,
+                last: doc.last,
+                specialties: doc.specialties,
+            };
+        });
+    };
 
     useEffect(() => {
         (async () => {
@@ -60,8 +73,10 @@ const Profile = () => {
                 bio: dataUser.bio,
                 doctorPic: dataUser.doctorPic,
             });
-            // fetch articles passing session.userId
-            // use db.getDoctorArticles(req.session.userId)
+
+            const respArticles = await fetch("/doctor-own-articles.json");
+            const docArticles = await respArticles.json();
+            setArticles(formatArticles(docArticles, dataUser));
         })();
     }, []);
 
@@ -73,9 +88,19 @@ const Profile = () => {
         setPic(target.files[0]);
     };
 
-    // for the more button
-    // pass the smallestId as param on the fetch
-    // db.getMoreDoctorArticles(req.session.userId, smallestId);
+    const handleClick = async () => {
+        const smallestId = articles[articles.length - 1].articleId;
+        const data = await fetch(`/more-doctor-articles/${smallestId}.json`);
+        const moreArticles = await data.json();
+
+        const formatedMoreArticles = formatArticles(moreArticles, inputsInfo);
+        setArticles([...articles, ...formatedMoreArticles]);
+
+        moreArticles.filter((article) => article.articleId === article.lowestId)
+            .length
+            ? setMoreButton(false)
+            : setMoreButton(true);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -156,14 +181,10 @@ const Profile = () => {
                                     src={doctorPic || "/default-picture.png"}
                                 />
                                 {editMode && (
-                                    <Stack spacing={1} justifyContent="center">
-                                        <Button
-                                            disableElevation
-                                            variant="outlined"
-                                            color="secondary"
-                                        >
-                                            Delete picture
-                                        </Button>
+                                    <Stack
+                                        spacing={1}
+                                        justifyContent="flex-end"
+                                    >
                                         <Button
                                             disableElevation
                                             variant="contained"
@@ -208,15 +229,19 @@ const Profile = () => {
                                 )}
                             </Stack>
 
+                            {error && (
+                                <Typography
+                                    sx={{
+                                        color: "error.main",
+                                        mt: 2,
+                                        mb: 1,
+                                    }}
+                                >
+                                    {error}
+                                </Typography>
+                            )}
                             <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
                                 <Box width="50%">
-                                    {error && (
-                                        <Typography
-                                            sx={{ color: "error.main", my: 2 }}
-                                        >
-                                            {error}
-                                        </Typography>
-                                    )}
                                     <Typography>First name</Typography>
                                     {editMode ? (
                                         <TextField
@@ -346,7 +371,7 @@ const Profile = () => {
                                     </Box>
                                     <Box width="50%">
                                         <Typography>
-                                            Clinic city and country
+                                            City and country
                                         </Typography>
                                         {editMode ? (
                                             <TextField
@@ -427,7 +452,7 @@ const Profile = () => {
                 </form>
             </Card>
 
-            <Typography variant="h3" sx={{ fontWeight: "light" }}>
+            <Typography variant="h3" sx={{ fontWeight: "light", mt: 4, mb: 2 }}>
                 Your <strong>conversations</strong>
             </Typography>
 
@@ -438,7 +463,10 @@ const Profile = () => {
                 justifyContent="space-between"
                 alignItems="center"
             >
-                <Typography variant="h3" sx={{ fontWeight: "light" }}>
+                <Typography
+                    variant="h3"
+                    sx={{ fontWeight: "light", mt: 4, mb: 2 }}
+                >
                     Published <strong>articles</strong>
                 </Typography>
                 <Button
@@ -450,21 +478,25 @@ const Profile = () => {
                     create new article
                 </Button>
             </Stack>
-            {/* {articles &&
+            {articles &&
                 articles.map((article) => (
-                    <ArticlesList key={article.articleId} article={article} editMode={true}/>
+                    <ArticlesList
+                        key={article.articleId}
+                        article={article}
+                        editMode={true}
+                    />
                 ))}
-            {moreButton && ( */}
-            <Button
-                endIcon={<KeyboardArrowDown />}
-                variant="outlined"
-                color="info"
-                sx={{ alignSelf: "center", mt: 2 }}
-                // onClick={handleClick}
-            >
-                More articles
-            </Button>
-            {/* )} */}
+            {moreButton && (
+                <Button
+                    endIcon={<KeyboardArrowDown />}
+                    variant="outlined"
+                    color="info"
+                    sx={{ alignSelf: "center", mt: 2 }}
+                    onClick={handleClick}
+                >
+                    More articles
+                </Button>
+            )}
         </Stack>
     );
 };
