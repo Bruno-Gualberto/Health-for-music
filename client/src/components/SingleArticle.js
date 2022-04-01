@@ -58,7 +58,7 @@ const SingleArticle = () => {
                         Specialist in {article.specialties}
                     </Typography>
                     <Typography sx={{ fontWeight: "light" }}>
-                        {article.city}
+                        {article.cityAndCountry}
                     </Typography>
                 </Box>
             </Stack>

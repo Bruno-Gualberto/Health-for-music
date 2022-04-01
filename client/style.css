@@ -59,6 +59,13 @@ input[name="findArticles"] {
     margin: 0;
 }
 
+.doc-pic-profile {
+    height: 100px;
+    width: 100px;
+    object-fit: cover;
+    border-radius: 50px;
+}
+
 /* override button contained color secondary hover */
 /* .MuiButton-contained.MuiButton-containedSecondary:hover {
     background-color: ;

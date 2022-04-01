@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { doctorData, normalUserData } from "../redux/userData/slice";
 import Header from "./Header";
 import {
     Box,

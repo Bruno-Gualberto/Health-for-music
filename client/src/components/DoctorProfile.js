@@ -76,7 +76,7 @@ const DoctorProfile = () => {
                     Dr. {doctor.first} {doctor.last}
                 </Typography>
                 <Typography>Specialist in {doctor.specialties}</Typography>
-                <Typography sx={{ mb: 2 }}>{doctor.city}</Typography>
+                <Typography sx={{ mb: 2 }}>{doctor.cityAndCountry}</Typography>
                 <Grid container spacing={4} sx={{ mb: 4 }}>
                     <Grid item xs={12}>
                         <Card elevation={3} sx={{ p: 4 }}>
@@ -84,7 +84,7 @@ const DoctorProfile = () => {
                                 <img
                                     className="big-round-profile-pic"
                                     src={
-                                        doctor.doctor_pic ||
+                                        doctor.doctorPic ||
                                         "/default-picture.png"
                                     }
                                 />
@@ -141,7 +141,7 @@ const DoctorProfile = () => {
                             >
                                 <Circle sx={{ color: "primary.dark" }} />
                                 <Typography sx={{ color: "#818181" }}>
-                                    {doctor.address}, {doctor.city}
+                                    {doctor.address}, {doctor.cityAndCountry}
                                 </Typography>
                             </Stack>
                             <Button

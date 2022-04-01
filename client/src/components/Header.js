@@ -48,6 +48,14 @@ const Header = (props) => {
                         <Stack direction="row" spacing={2}>
                             {userData.id && (
                                 <>
+                                    {userData.doctor && (
+                                        <Button
+                                            href="/profile"
+                                            sx={{ color: "white" }}
+                                        >
+                                            Profile
+                                        </Button>
+                                    )}
                                     <Button
                                         href="/articles"
                                         sx={{ color: "white" }}

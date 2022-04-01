@@ -4,8 +4,11 @@ const compression = require("compression");
 const path = require("path");
 const db = require("../database/db");
 const cookieSession = require("cookie-session");
-// const { hash, compare } = require("./bc");
-// const cryptoRandomString = require("crypto-random-string");
+const createDOMPurify = require("dompurify");
+const { JSDOM } = require("jsdom");
+
+const window = new JSDOM("").window;
+const DOMPurify = createDOMPurify(window);
 
 const server = require("http").Server(app);
 const io = require("socket.io")(server, {
@@ -186,6 +189,8 @@ app.post(
     s3.upload,
     async (req, res) => {
         let { title, subtitle, text } = req.body;
+        const sanitizedText = DOMPurify.sanitize(text);
+
         // title, subtitle and text are in req.body
         let url = `https://s3.amazonaws.com/buckethealthformusic/${req.file.filename}`;
         // the url must be:
@@ -195,7 +200,7 @@ app.post(
                 req.session.userId,
                 title,
                 subtitle,
-                text,
+                sanitizedText,
                 url
             );
             const { rows } = query;
@@ -227,6 +232,7 @@ app.post(
     async (req, res) => {
         let { title, subtitle, text } = req.body;
         const articleId = parseInt(req.body.articleId);
+        const sanitizedText = DOMPurify.sanitize(text);
 
         let url = `https://s3.amazonaws.com/buckethealthformusic/${req.file.filename}`;
         try {
@@ -234,7 +240,7 @@ app.post(
                 articleId,
                 title,
                 subtitle,
-                text,
+                sanitizedText,
                 url
             );
             const { rows } = query;
@@ -249,12 +255,14 @@ app.post(
 app.post("/edit-article-text.json", hasAllFields, async (req, res) => {
     let { title, subtitle, text, articleId } = req.body;
     articleId = parseInt(articleId);
+    const sanitizedText = DOMPurify.sanitize(text);
+
     try {
         const query = await db.updateArticleText(
             articleId,
             title,
             subtitle,
-            text
+            sanitizedText
         );
         const { rows } = query;
         return res.json(rows[0]);
@@ -263,6 +271,111 @@ app.post("/edit-article-text.json", hasAllFields, async (req, res) => {
         return res.sendStatus(500);
     }
 });
+
+function hasAllProfileFields(req, res, next) {
+    let {
+        first,
+        last,
+        specialties,
+        email,
+        phone,
+        address,
+        cityAndCountry,
+        bio,
+    } = req.body;
+    if (
+        !first ||
+        !last ||
+        !specialties ||
+        !email ||
+        !phone ||
+        !address ||
+        !cityAndCountry ||
+        !bio
+    ) {
+        return res.json({
+            error: "You must fill in all the fields.",
+        });
+    } else {
+        next();
+    }
+}
+
+app.post(
+    "/edit-profile-with-pic.json",
+    uploader.single("file"),
+    hasAllProfileFields,
+    s3.upload,
+    async (req, res) => {
+        let {
+            first,
+            last,
+            specialties,
+            email,
+            phone,
+            address,
+            cityAndCountry,
+            bio,
+        } = req.body;
+        let url = `https://s3.amazonaws.com/buckethealthformusic/${req.file.filename}`;
+
+        try {
+            const query = await db.updateProfileWithPic(
+                req.session.userId,
+                first,
+                last,
+                specialties,
+                email,
+                phone,
+                address,
+                cityAndCountry,
+                bio,
+                url
+            );
+            const { rows } = query;
+            return res.json(rows[0]);
+        } catch (err) {
+            console.log("error on POST /edit-profile-with-pic.json", err);
+            return res.sendStatus(500);
+        }
+    }
+);
+
+app.post(
+    "/edit-profile-text-only.json",
+    hasAllProfileFields,
+    async (req, res) => {
+        let {
+            first,
+            last,
+            specialties,
+            email,
+            phone,
+            address,
+            cityAndCountry,
+            bio,
+        } = req.body;
+
+        try {
+            const query = await db.updateProfileText(
+                req.session.userId,
+                first,
+                last,
+                specialties,
+                email,
+                phone,
+                address,
+                cityAndCountry,
+                bio
+            );
+            const { rows } = query;
+            return res.json(rows[0]);
+        } catch (err) {
+            console.log("error on POST /edit-profile-text-only.json", err);
+            return res.sendStatus(500);
+        }
+    }
+);
 
 app.get("/logout", (req, res) => {
     delete req.session.userId;

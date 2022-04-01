@@ -7,13 +7,15 @@ const db = spicedPg(
 
 module.exports.addDoctor = () => {
     return db.query(`
-        INSERT INTO doctors (first, last, email, address, city, doctor, specialties)
+        INSERT INTO doctors (first, last, email, address, city_country, phone, bio, doctor, specialties)
         VALUES (
-            'Bruno', 
-            'Gualberto', 
-            'bruno@gualberto.com',
-            'Ritterstraße 12-14',
-            'Berlin',
+            'Spider', 
+            'Doctor', 
+            'spider@doctor.com',
+            'Ritterstraße 12-14, 10969',
+            'Berlin, Germany',
+            '+49 1234567890',
+            'I studied in Brooklin, friend of the neighbourhood and nothing to be suspicious about.',
             true,
             'hand'
         )
@@ -38,7 +40,7 @@ module.exports.fakeLoginDoctor = () => {
     return db.query(`
         SELECT id, doctor
         FROM doctors
-        WHERE id = 12
+        WHERE id = 1
     `);
 };
 
@@ -46,14 +48,14 @@ module.exports.fakeLoginUser = () => {
     return db.query(`
         SELECT id, doctor
         FROM users
-        WHERE id = 2
+        WHERE id = 1
     `);
 };
 
 module.exports.getDoctorById = (userId) => {
     return db.query(
         `
-        SELECT * 
+        SELECT id, first, last, email, address, city_country AS cityAndCountry, doctor, doctor_pic AS "doctorPic", specialties, phone, bio
         FROM doctors
         WHERE id = $1
     `,
@@ -109,7 +111,7 @@ module.exports.getMoreArticles = (smallestId) => {
 module.exports.getSingleArticle = (articleId) => {
     return db.query(
         `
-        SELECT articles.title, articles.subtitle, articles.text, articles.article_pic AS "articlePic", articles.timestamp, doctors.first, doctors.last, doctors.doctor_pic AS "doctorPic", doctors.city, doctors.specialties, doctors.id AS "doctorId"
+        SELECT articles.title, articles.subtitle, articles.text, articles.article_pic AS "articlePic", articles.timestamp, doctors.first, doctors.last, doctors.doctor_pic AS "doctorPic", doctors.city_country AS "cityAndCountry", doctors.specialties, doctors.id AS "doctorId"
         FROM articles
         JOIN doctors
         ON articles.doc_id = doctors.id
@@ -122,7 +124,7 @@ module.exports.getSingleArticle = (articleId) => {
 module.exports.getDoctorById = (doctorId) => {
     return db.query(
         `
-        SELECT * 
+        SELECT id, first, last, email, address, city_country AS "cityAndCountry", phone, bio, doctor, doctor_pic AS "doctorPic", specialties
         FROM doctors
         WHERE id = $1
     `,
@@ -215,5 +217,71 @@ module.exports.updateArticleText = (articleId, title, subtitle, text) => {
         RETURNING id AS "articleId"
     `,
         [articleId, title, subtitle, text]
+    );
+};
+
+module.exports.updateProfileWithPic = (
+    doctorId,
+    first,
+    last,
+    specialties,
+    email,
+    phone,
+    address,
+    cityAndCountry,
+    bio,
+    doctorPic
+) => {
+    return db.query(
+        `
+        UPDATE doctors
+        SET first = $2, last = $3, specialties = $4, email = $5, phone = $6, address = $7, city_country = $8, bio = $9, doctor_pic = $10
+        WHERE id = $1
+        RETURNING first, last, specialties, email, phone, address, city_country AS "cityAndCountry", bio, doctor_pic AS "doctorPic"
+    `,
+        [
+            doctorId,
+            first,
+            last,
+            specialties,
+            email,
+            phone,
+            address,
+            cityAndCountry,
+            bio,
+            doctorPic,
+        ]
+    );
+};
+
+module.exports.updateProfileText = (
+    doctorId,
+    first,
+    last,
+    specialties,
+    email,
+    phone,
+    address,
+    cityAndCountry,
+    bio
+) => {
+    return db.query(
+        `
+        UPDATE doctors
+        SET first = $2, last = $3, specialties = $4, email = $5, phone = $6, address = $7, city_country = $8, bio = $9
+        WHERE id = $1
+        RETURNING first, last, specialties, email, phone, address, city_country AS "cityAndCountry", bio, doctor_pic AS "doctorPic"
+    `,
+        [
+            doctorId,
+            first,
+            last,
+            specialties,
+            email,
+            phone,
+            address,
+            cityAndCountry,
+            bio,
+        ]
     );
 };
