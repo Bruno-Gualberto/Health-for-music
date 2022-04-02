@@ -39,7 +39,7 @@ const Articles = () => {
     };
 
     return (
-        <Stack sx={{ px: 24, mb: 4, minHeight: "83.5vh" }}>
+        <Stack sx={{ px: 24, mb: 4 }}>
             <Typography variant="h3" sx={{ color: "primary.dark", mt: 2 }}>
                 Articles
             </Typography>

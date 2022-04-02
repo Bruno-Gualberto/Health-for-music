@@ -12,7 +12,6 @@ import DoctorProfile from "./DoctorProfile";
 import Profile from "./Profile";
 import CreateEditArticle from "./CreateEditArticle";
 import PrivateChat from "./PrivateChat";
-import Footer from "./Footer";
 
 const App = () => {
     const dispatch = useDispatch();
@@ -57,7 +56,6 @@ const App = () => {
                     <Home />
                 </Route>
             </BrowserRouter>
-            <Footer />
         </>
     );
 };

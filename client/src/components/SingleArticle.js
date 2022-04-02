@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
+import formatDate from "../utils";
+
 import { Stack, Typography, Box, Button } from "@mui/material";
 
 const SingleArticle = () => {
@@ -12,20 +14,14 @@ const SingleArticle = () => {
             const resp = await fetch(`/single-article/${articleId}.json`);
             const articleInfo = await resp.json();
             let wholeDate = new Date(articleInfo.timestamp).toDateString();
-            const date = `${wholeDate
-                .split(" ")
-                .splice(2, 1)
-                .join("")} ${wholeDate
-                .split(" ")
-                .splice(1, 1)
-                .join("")} ${wholeDate.split(" ").splice(3, 1).join("")}`;
+            const date = formatDate(wholeDate);
             articleInfo.timestamp = date;
             setArticle(articleInfo);
         })();
     }, []);
 
     return (
-        <Stack sx={{ px: 24, minHeight: "83.5vh", color: "#818181" }}>
+        <Stack sx={{ px: 24, color: "#818181" }}>
             <Typography
                 variant="h3"
                 component="h1"

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { socket } from "../socket";
 
 import {
-    Paper,
+    Card,
     Typography,
     TextField,
     Button,
@@ -78,29 +78,33 @@ const PrivateChat = () => {
     };
 
     return (
-        <div>
+        <Box sx={{ px: 24 }}>
             <Typography
-                variant="h5"
+                variant="h3"
                 component="h1"
-                sx={{ mb: 1, color: "primary.dark" }}
+                sx={{ my: 3, fontWeight: "light", color: "primary.dark" }}
             >
-                Your conversation with {otherUserInfo.first}{" "}
-                {otherUserInfo.last}
+                Your conversation with{" "}
+                <strong>
+                    {otherUserInfo.first} {otherUserInfo.last}
+                </strong>
             </Typography>
-            <div style={{ marginBottom: "8px" }}>
-                <Paper
-                    component="div"
+            <Card
+                sx={{
+                    p: 3,
+                    mb: 6,
+                }}
+                elevation={3}
+            >
+                <Box
                     sx={{
-                        bgcolor: "#e9e9e9",
-                        height: 350,
                         overflow: "auto",
+                        height: "430px",
                     }}
                     style={{
                         display: "flex",
                         flexDirection: "column-reverse",
-                        overflow: "auto",
                     }}
-                    elevation={3}
                 >
                     {lastTenMsgs &&
                         lastTenMsgs.map((message) => (
@@ -111,7 +115,6 @@ const PrivateChat = () => {
                                             sx={{
                                                 color: "primary.dark",
                                                 textAlign: "end",
-                                                px: 1,
                                             }}
                                         >
                                             You
@@ -121,18 +124,13 @@ const PrivateChat = () => {
                                             sx={{
                                                 textAlign: "end",
                                                 color: "#818181",
-                                                px: 1,
                                             }}
                                         >
                                             {message.text}
                                         </Typography>
                                     </>
                                 ) : (
-                                    <Stack
-                                        direction="row"
-                                        spacing={2}
-                                        sx={{ ml: 1 }}
-                                    >
+                                    <Stack direction="row" spacing={2}>
                                         <img
                                             className="profile-pic-chat"
                                             src={
@@ -161,35 +159,36 @@ const PrivateChat = () => {
                                 )}
                             </Box>
                         ))}
-                </Paper>
-            </div>
-            <Grid container spacing={1} alignItems="center">
-                <Grid item xs={9}>
-                    <TextField
-                        type="text"
-                        size="small"
-                        variant="outlined"
-                        fullWidth
-                        placeholder="Type here"
-                        name="privateChat"
-                        ref={inputRef}
-                        onKeyDown={handleKeyDown}
-                        onChange={({ target }) => handleChange(target)}
-                    />
+                </Box>
+                <Grid container spacing={1} alignItems="center">
+                    <Grid item xs={10}>
+                        <TextField
+                            type="text"
+                            size="small"
+                            variant="outlined"
+                            fullWidth
+                            placeholder="Type here"
+                            name="privateChat"
+                            ref={inputRef}
+                            onKeyDown={handleKeyDown}
+                            onChange={({ target }) => handleChange(target)}
+                        />
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Button
+                            disableElevation
+                            sx={{ width: 1 }}
+                            variant="contained"
+                            color="secondary"
+                            endIcon={<Send />}
+                            onClick={handleSubmit}
+                        >
+                            SEND
+                        </Button>
+                    </Grid>
                 </Grid>
-                <Grid item xs={3}>
-                    <Button
-                        sx={{ width: 1 }}
-                        variant="contained"
-                        color="secondary"
-                        endIcon={<Send />}
-                        onClick={handleSubmit}
-                    >
-                        SEND
-                    </Button>
-                </Grid>
-            </Grid>
-        </div>
+            </Card>
+        </Box>
     );
 };
 

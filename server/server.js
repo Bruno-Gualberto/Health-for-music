@@ -404,6 +404,16 @@ app.get("/other-user/:otherUserId.json", async (req, res) => {
     }
 });
 
+app.get("/all-users.json", async (req, res) => {
+    try {
+        const query = await db.getAllUsers();
+        const { rows } = query;
+        res.json(rows);
+    } catch (err) {
+        console.log("error on GET /all-users.json", err);
+    }
+});
+
 app.get("/logout", (req, res) => {
     delete req.session.userId;
     delete req.session.doctor;

@@ -309,3 +309,10 @@ module.exports.addNewPrivMsg = (privMsg, userId, otherUserId) => {
         [privMsg, userId, otherUserId]
     );
 };
+
+module.exports.getAllUsers = () => {
+    return db.query(`
+        SELECT id, first, last, profile_pic AS "profilePic"
+        FROM users
+    `);
+};

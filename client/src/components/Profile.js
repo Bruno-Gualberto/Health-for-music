@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import { Circle, KeyboardArrowDown } from "@mui/icons-material";
 
-// passar o article id como params ao apertar o botao de editar
 const Profile = () => {
     const [inputsInfo, setInputsInfo] = useState({
         first: "",
@@ -29,11 +28,12 @@ const Profile = () => {
         doctorPic: "",
     });
     const [loading, setLoading] = useState(false);
-    const [editMode, setEditMode] = useState(false);
     const [error, setError] = useState("");
     const [pic, setPic] = useState("");
     const [articles, setArticles] = useState([]);
     const [moreButton, setMoreButton] = useState(true);
+    const [userId, setUserId] = useState(0);
+    const [allUsers, setAllUsers] = useState([]);
 
     let {
         first,
@@ -73,10 +73,15 @@ const Profile = () => {
                 bio: dataUser.bio,
                 doctorPic: dataUser.doctorPic,
             });
+            setUserId(dataUser.id);
 
             const respArticles = await fetch("/doctor-own-articles.json");
             const docArticles = await respArticles.json();
             setArticles(formatArticles(docArticles, dataUser));
+
+            const respAll = await fetch("/all-users.json");
+            const allUsers = await respAll.json();
+            setAllUsers(allUsers);
         })();
     }, []);
 
@@ -130,7 +135,6 @@ const Profile = () => {
             } else {
                 setInputsInfo({ ...data });
                 setLoading(false);
-                setEditMode(false);
             }
         } else {
             const resp = await fetch("/edit-profile-text-only.json", {
@@ -155,19 +159,55 @@ const Profile = () => {
             } else {
                 setInputsInfo({ ...data });
                 setLoading(false);
-                setEditMode(false);
             }
         }
     };
 
+    const allMessages = useSelector((state) => {
+        return state.privateMessages.filter((message) => {
+            return (
+                message.loggedUserId === userId ||
+                message.otherUserId === userId
+            );
+        });
+    });
+
+    const filterUsers = (arrUsers) => {
+        return arrUsers.map((user) => {
+            return allMessages.filter((message) => {
+                return (
+                    (user.id === message.loggedUserId ||
+                        user.id === message.otherUserId) &&
+                    user.id !== userId
+                );
+            });
+        });
+    };
+
+    const usersWithChat = filterUsers(allUsers).filter((arr) => arr.length);
+    const lastMsgEachUser = usersWithChat.map((arr) => arr.slice(0, 1)).flat();
+
+    const userAndMsg = lastMsgEachUser
+        .map((msg) => {
+            return allUsers.map((user) => {
+                if (
+                    (user.id === msg.loggedUserId ||
+                        user.id === msg.otherUserId) &&
+                    user.id !== userId
+                ) {
+                    return { ...user, ...msg, userId };
+                }
+            });
+        })
+        .flat()
+        .filter((item) => item)
+        .sort((a, b) => b.id - a.id);
+    console.log("userAndMsg", userAndMsg);
     return (
-        <Stack
-            sx={{ px: 24, mb: 4, minHeight: "83.5vh", color: "primary.dark" }}
-        >
+        <Stack sx={{ px: 24, mb: 4, color: "primary.dark" }}>
             <Typography variant="h3" sx={{ fontWeight: "light", mt: 4, mb: 2 }}>
                 Your <strong>profile</strong>
             </Typography>
-
             <Card elevation={3} sx={{ p: 4 }}>
                 <form>
                     <Grid container spacing={4}>
@@ -180,53 +220,44 @@ const Profile = () => {
                                     className="doc-pic-profile"
                                     src={doctorPic || "/default-picture.png"}
                                 />
-                                {editMode && (
-                                    <Stack
-                                        spacing={1}
-                                        justifyContent="flex-end"
+                                <Stack spacing={1} justifyContent="flex-end">
+                                    <Button
+                                        disableElevation
+                                        variant="contained"
+                                        color="secondary"
+                                        component="label"
                                     >
-                                        <Button
-                                            disableElevation
-                                            variant="contained"
-                                            color="secondary"
-                                            component="label"
-                                        >
-                                            {!pic ? (
-                                                "Upload picture"
-                                            ) : (
-                                                <div
-                                                    style={{
-                                                        overflow: "hidden",
-                                                        textOverflow:
-                                                            "ellipsis",
-                                                        maxWidth: "150px",
+                                        {!pic ? (
+                                            "Upload picture"
+                                        ) : (
+                                            <div
+                                                style={{
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                    maxWidth: "150px",
+                                                }}
+                                            >
+                                                <Typography
+                                                    noWrap
+                                                    sx={{
+                                                        fontSize: "0.875rem",
+                                                        fontWeight: 500,
                                                     }}
                                                 >
-                                                    <Typography
-                                                        noWrap
-                                                        sx={{
-                                                            fontSize:
-                                                                "0.875rem",
-                                                            fontWeight: 500,
-                                                        }}
-                                                    >
-                                                        {pic.name}
-                                                    </Typography>
-                                                </div>
-                                            )}
-                                            <input
-                                                type="file"
-                                                hidden
-                                                name="doctorPic"
-                                                onChange={({ target }) =>
-                                                    handleProfilePicChange(
-                                                        target
-                                                    )
-                                                }
-                                            />
-                                        </Button>
-                                    </Stack>
-                                )}
+                                                    {pic.name}
+                                                </Typography>
+                                            </div>
+                                        )}
+                                        <input
+                                            type="file"
+                                            hidden
+                                            name="doctorPic"
+                                            onChange={({ target }) =>
+                                                handleProfilePicChange(target)
+                                            }
+                                        />
+                                    </Button>
+                                </Stack>
                             </Stack>
 
                             {error && (
@@ -243,105 +274,76 @@ const Profile = () => {
                             <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
                                 <Box width="50%">
                                     <Typography>First name</Typography>
-                                    {editMode ? (
-                                        <TextField
-                                            size="small"
-                                            fullWidth
-                                            value={first}
-                                            type="text"
-                                            name="first"
-                                            placeholder="First name"
-                                            onChange={({ target }) =>
-                                                handleInputChange(target)
-                                            }
-                                        />
-                                    ) : (
-                                        <Typography sx={{ color: "#818181" }}>
-                                            {first || null}
-                                        </Typography>
-                                    )}
+                                    <TextField
+                                        size="small"
+                                        fullWidth
+                                        value={first}
+                                        type="text"
+                                        name="first"
+                                        placeholder="First name"
+                                        onChange={({ target }) =>
+                                            handleInputChange(target)
+                                        }
+                                    />
                                 </Box>
                                 <Box width="50%">
                                     <Typography>Last name</Typography>
-                                    {editMode ? (
-                                        <TextField
-                                            size="small"
-                                            fullWidth
-                                            value={last}
-                                            type="text"
-                                            name="last"
-                                            placeholder="Last name"
-                                            onChange={({ target }) =>
-                                                handleInputChange(target)
-                                            }
-                                        />
-                                    ) : (
-                                        <Typography sx={{ color: "#818181" }}>
-                                            {last || null}
-                                        </Typography>
-                                    )}
+                                    <TextField
+                                        size="small"
+                                        fullWidth
+                                        value={last}
+                                        type="text"
+                                        name="last"
+                                        placeholder="Last name"
+                                        onChange={({ target }) =>
+                                            handleInputChange(target)
+                                        }
+                                    />
                                 </Box>
                             </Stack>
 
                             <Typography sx={{ mt: 1 }}>
                                 Area of specialization
                             </Typography>
-                            {editMode ? (
-                                <TextField
-                                    type="text"
-                                    name="specialties"
-                                    fullWidth
-                                    value={specialties}
-                                    size="small"
-                                    placeholder="Area of specialization"
-                                    onChange={({ target }) =>
-                                        handleInputChange(target)
-                                    }
-                                />
-                            ) : (
-                                <Typography sx={{ color: "#818181" }}>
-                                    {specialties || null}
-                                </Typography>
-                            )}
+                            <TextField
+                                type="text"
+                                name="specialties"
+                                fullWidth
+                                value={specialties}
+                                size="small"
+                                placeholder="Area of specialization"
+                                onChange={({ target }) =>
+                                    handleInputChange(target)
+                                }
+                            />
+
                             <Typography sx={{ mt: 1 }}>E-mail</Typography>
-                            {editMode ? (
-                                <TextField
-                                    type="email"
-                                    name="email"
-                                    fullWidth
-                                    value={email}
-                                    size="small"
-                                    placeholder="Ex: example@mail.com"
-                                    onChange={({ target }) =>
-                                        handleInputChange(target)
-                                    }
-                                />
-                            ) : (
-                                <Typography sx={{ color: "#818181" }}>
-                                    {email || null}
-                                </Typography>
-                            )}
+                            <TextField
+                                type="email"
+                                name="email"
+                                fullWidth
+                                value={email}
+                                size="small"
+                                placeholder="Ex: example@mail.com"
+                                onChange={({ target }) =>
+                                    handleInputChange(target)
+                                }
+                            />
                         </Grid>
                         <Grid item xs={6} sx={{ color: "primary.dark" }}>
                             <Stack height="100%">
                                 <Typography>Phone</Typography>
-                                {editMode ? (
-                                    <TextField
-                                        type="text"
-                                        name="phone"
-                                        fullWidth
-                                        value={phone}
-                                        size="small"
-                                        placeholder="Ex: +49 1234567890"
-                                        onChange={({ target }) =>
-                                            handleInputChange(target)
-                                        }
-                                    />
-                                ) : (
-                                    <Typography sx={{ color: "#818181" }}>
-                                        {phone || null}
-                                    </Typography>
-                                )}
+                                <TextField
+                                    type="text"
+                                    name="phone"
+                                    fullWidth
+                                    value={phone}
+                                    size="small"
+                                    placeholder="Ex: +49 1234567890"
+                                    onChange={({ target }) =>
+                                        handleInputChange(target)
+                                    }
+                                />
                                 <Stack
                                     direction="row"
                                     spacing={2}
@@ -349,101 +351,68 @@ const Profile = () => {
                                 >
                                     <Box width="50%">
                                         <Typography>Clinic address</Typography>
-                                        {editMode ? (
-                                            <TextField
-                                                type="text"
-                                                name="address"
-                                                fullWidth
-                                                value={address}
-                                                size="small"
-                                                placeholder="Ex: Street 15, 12345"
-                                                onChange={({ target }) =>
-                                                    handleInputChange(target)
-                                                }
-                                            />
-                                        ) : (
-                                            <Typography
-                                                sx={{ color: "#818181" }}
-                                            >
-                                                {address || null}
-                                            </Typography>
-                                        )}
+                                        <TextField
+                                            type="text"
+                                            name="address"
+                                            fullWidth
+                                            value={address}
+                                            size="small"
+                                            placeholder="Ex: Street 15, 12345"
+                                            onChange={({ target }) =>
+                                                handleInputChange(target)
+                                            }
+                                        />
                                     </Box>
                                     <Box width="50%">
                                         <Typography>
                                             City and country
                                         </Typography>
-                                        {editMode ? (
-                                            <TextField
-                                                type="text"
-                                                name="cityAndCountry"
-                                                fullWidth
-                                                value={cityAndCountry}
-                                                size="small"
-                                                placeholder="Ex: Berlin, Germany"
-                                                onChange={({ target }) =>
-                                                    handleInputChange(target)
-                                                }
-                                            />
-                                        ) : (
-                                            <Typography
-                                                sx={{ color: "#818181" }}
-                                            >
-                                                {cityAndCountry || null}
-                                            </Typography>
-                                        )}
+                                        <TextField
+                                            type="text"
+                                            name="cityAndCountry"
+                                            fullWidth
+                                            value={cityAndCountry}
+                                            size="small"
+                                            placeholder="Ex: Berlin, Germany"
+                                            onChange={({ target }) =>
+                                                handleInputChange(target)
+                                            }
+                                        />
                                     </Box>
                                 </Stack>
                                 <Typography sx={{ mt: 2 }}>
                                     Short description about yourself
                                 </Typography>
-                                {editMode ? (
-                                    <TextField
-                                        type="text"
-                                        name="bio"
-                                        size="small"
-                                        fullWidth
-                                        value={bio}
-                                        multiline
-                                        rows={4}
-                                        inputProps={{ maxLength: 255 }}
-                                        helperText="Maximum characters allowed: 255"
-                                        onChange={({ target }) =>
-                                            handleInputChange(target)
-                                        }
-                                    />
-                                ) : (
-                                    <Typography sx={{ color: "#818181" }}>
-                                        {bio || null}
-                                    </Typography>
-                                )}
+                                <TextField
+                                    type="text"
+                                    name="bio"
+                                    size="small"
+                                    fullWidth
+                                    value={bio}
+                                    multiline
+                                    rows={4}
+                                    inputProps={{ maxLength: 255 }}
+                                    helperText="Maximum characters allowed: 255"
+                                    onChange={({ target }) =>
+                                        handleInputChange(target)
+                                    }
+                                />
                                 <Stack
                                     justifyContent="flex-end"
                                     alignItems="flex-end"
                                     sx={{ flexGrow: 1 }}
                                 >
-                                    {editMode ? (
-                                        !loading ? (
-                                            <Button
-                                                disableElevation
-                                                variant="contained"
-                                                color="secondary"
-                                                onClick={(e) => handleSubmit(e)}
-                                            >
-                                                Save changes
-                                            </Button>
-                                        ) : (
-                                            <CircularProgress color="secondary" />
-                                        )
-                                    ) : (
+                                    {!loading ? (
                                         <Button
                                             disableElevation
                                             variant="contained"
                                             color="secondary"
-                                            onClick={() => setEditMode(true)}
+                                            onClick={(e) => handleSubmit(e)}
                                         >
-                                            Edit profile
+                                            Save changes
                                         </Button>
+                                    ) : (
+                                        <CircularProgress color="secondary" />
                                     )}
                                 </Stack>
                             </Stack>
@@ -451,13 +420,16 @@ const Profile = () => {
                     </Grid>
                 </form>
             </Card>
-
             <Typography variant="h3" sx={{ fontWeight: "light", mt: 4, mb: 2 }}>
                 Your <strong>conversations</strong>
             </Typography>
 
-            <ConversationsList />
-
+            <Card elevation={3} sx={{ maxHeight: "350px", overflowY: "auto" }}>
+                {userAndMsg.length &&
+                    userAndMsg.map((msg, i) => (
+                        <ConversationsList key={i} lastMsg={msg} />
+                    ))}
+            </Card>
             <Stack
                 direction="row"
                 justifyContent="space-between"

@@ -71,9 +71,7 @@ const DoctorProfile = () => {
     };
 
     return (
-        <Stack
-            sx={{ px: 24, mb: 4, minHeight: "83.5vh", color: "primary.dark" }}
-        >
+        <Stack sx={{ px: 24, mb: 4, color: "primary.dark" }}>
             <Box>
                 <Typography variant="h3" sx={{ mt: 4 }}>
                     Dr. {doctor.first} {doctor.last}

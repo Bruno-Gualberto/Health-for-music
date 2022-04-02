@@ -136,9 +136,7 @@ const CreateEditArticle = () => {
     };
 
     return (
-        <Stack
-            sx={{ px: 24, mb: 4, minHeight: "83.5vh", color: "primary.dark" }}
-        >
+        <Stack sx={{ px: 24, mb: 4, color: "primary.dark" }}>
             <Typography variant="h3" sx={{ fontWeight: "light", my: 3 }}>
                 Your <strong>article</strong>
             </Typography>
@@ -240,7 +238,7 @@ const CreateEditArticle = () => {
                                 color="secondary"
                                 onClick={(e) => handleSubmit(e)}
                             >
-                                {!editMode ? "publish article" : "save article"}
+                                {!editMode ? "publish article" : "save changes"}
                             </Button>
                         ) : (
                             <CircularProgress color="secondary" />
