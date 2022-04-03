@@ -33,8 +33,6 @@ const PrivateChat = () => {
             setOtherUserInfo(otherUser);
         })();
     }, []);
-    console.log("loggedUserInfo: ", loggedUserInfo);
-    console.log("otherUserInfo: ", otherUserInfo);
 
     const allMessages = useSelector((state) => {
         return state.privateMessages.filter((message) => {
@@ -78,7 +76,7 @@ const PrivateChat = () => {
     };
 
     return (
-        <Box sx={{ px: 24 }}>
+        <Box className="chat-container">
             <Typography
                 variant="h3"
                 component="h1"

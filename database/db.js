@@ -78,6 +78,21 @@ module.exports.getArticles = () => {
     `);
 };
 
+module.exports.getAllArticles = () => {
+    return db.query(`
+        SELECT title, subtitle, article_pic AS "articlePic", articles.id  AS "articleId", users.first, users.last, users.specialties, users.id AS "doctorId", (
+            SELECT id FROM articles
+            ORDER BY id ASC
+            LIMIT 1
+        ) AS "lowestId" 
+        FROM articles
+        JOIN users
+        ON articles.doc_id = users.id
+        ORDER BY articles.id DESC
+        LIMIT 8
+    `);
+};
+
 module.exports.getMoreArticles = (smallestId) => {
     return db.query(
         `
@@ -92,6 +107,25 @@ module.exports.getMoreArticles = (smallestId) => {
         WHERE articles.id < $1
         ORDER BY articles.id DESC
         LIMIT 3
+    `,
+        [smallestId]
+    );
+};
+
+module.exports.getMoreAllArticles = (smallestId) => {
+    return db.query(
+        `
+        SELECT title, subtitle, article_pic AS "articlePic", articles.id  AS "articleId", users.first, users.last, users.specialties, users.id AS "doctorId", (
+            SELECT id FROM articles
+            ORDER BY id ASC
+            LIMIT 1
+        ) AS "lowestId" 
+        FROM articles
+        JOIN users
+        ON articles.doc_id = users.id
+        WHERE articles.id < $1
+        ORDER BY articles.id DESC
+        LIMIT 8
     `,
         [smallestId]
     );
@@ -315,4 +349,37 @@ module.exports.getAllUsers = () => {
         SELECT id, first, last, profile_pic AS "profilePic"
         FROM users
     `);
+};
+
+module.exports.getAllDoctors = () => {
+    return db.query(`
+        SELECT id, first, last, profile_pic AS "profilePic", bio, city_country AS "cityAndCountry", specialties, (
+            SELECT id FROM users
+            WHERE doctor = true
+            ORDER BY id ASC
+            LIMIT 1
+        ) AS "lowestId"
+        FROM users
+        WHERE doctor = true
+        ORDER BY id DESC
+        LIMIT 3
+    `);
+};
+
+module.exports.getMoreDoctors = (smallestId) => {
+    return db.query(
+        `
+        SELECT id, first, last, profile_pic AS "profilePic", bio, city_country AS "cityAndCountry", specialties, (
+            SELECT id FROM users
+            WHERE doctor = true
+            ORDER BY id ASC
+            LIMIT 1
+        ) AS "lowestId"
+        FROM users
+        WHERE doctor = true AND id < $1
+        ORDER BY id DESC
+        LIMIT 3
+    `,
+        [smallestId]
+    );
 };

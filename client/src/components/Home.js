@@ -2,7 +2,7 @@ import { Box, Typography, Grid, Card, Button, Stack } from "@mui/material";
 
 const Home = () => {
     return (
-        <>
+        <Box sx={{ pb: 2 }}>
             <Box
                 sx={{
                     width: "99.85%",
@@ -45,7 +45,7 @@ const Home = () => {
                                 >
                                     <img
                                         className="home-img-card"
-                                        src="/default-img.png"
+                                        src="/articles.jpeg"
                                     />
                                     <Typography variant="h5" sx={{ my: 1 }}>
                                         Read our articles
@@ -86,10 +86,10 @@ const Home = () => {
                                 >
                                     <img
                                         className="home-img-card"
-                                        src="/default-img.png"
+                                        src="/good_doctor.jpeg"
                                     />
                                     <Typography variant="h5" sx={{ my: 1 }}>
-                                        Find a doctor
+                                        Find a good doctor
                                     </Typography>
                                     <Typography
                                         variant="body1"
@@ -126,7 +126,7 @@ const Home = () => {
                                 >
                                     <img
                                         className="home-img-card"
-                                        src="/default-img.png"
+                                        src="/insurance.png"
                                     />
                                     <Typography variant="h5" sx={{ my: 1 }}>
                                         Get insured
@@ -154,7 +154,7 @@ const Home = () => {
                     </Grid>
                 </Box>
             </Box>
-        </>
+        </Box>
     );
 };
 

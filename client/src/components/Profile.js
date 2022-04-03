@@ -13,8 +13,7 @@ import {
     Box,
     CircularProgress,
 } from "@mui/material";
-import { Circle, KeyboardArrowDown } from "@mui/icons-material";
-
+import { Circle, KeyboardArrowDown, Add } from "@mui/icons-material";
 const Profile = () => {
     const [inputsInfo, setInputsInfo] = useState({
         first: "",
@@ -31,7 +30,7 @@ const Profile = () => {
     const [error, setError] = useState("");
     const [pic, setPic] = useState("");
     const [articles, setArticles] = useState([]);
-    const [moreButton, setMoreButton] = useState(true);
+    const [moreButton, setMoreButton] = useState(false);
     const [userId, setUserId] = useState(0);
     const [allUsers, setAllUsers] = useState([]);
 
@@ -77,7 +76,15 @@ const Profile = () => {
 
             const respArticles = await fetch("/doctor-own-articles.json");
             const docArticles = await respArticles.json();
-            setArticles(formatArticles(docArticles, dataUser));
+
+            if (docArticles.length) {
+                setArticles(formatArticles(docArticles, dataUser));
+                docArticles.filter(
+                    (article) => article.articleId === article.lowestId
+                ).length
+                    ? setMoreButton(false)
+                    : setMoreButton(true);
+            }
 
             const respAll = await fetch("/all-users.json");
             const allUsers = await respAll.json();
@@ -202,7 +209,7 @@ const Profile = () => {
         .flat()
         .filter((item) => item)
         .sort((a, b) => b.id - a.id);
-    console.log("userAndMsg", userAndMsg);
+
     return (
         <Stack sx={{ px: 24, mb: 4, color: "primary.dark" }}>
             <Typography variant="h3" sx={{ fontWeight: "light", mt: 4, mb: 2 }}>
@@ -424,12 +431,19 @@ const Profile = () => {
                 Your <strong>conversations</strong>
             </Typography>
 
-            <Card elevation={3} sx={{ maxHeight: "350px", overflowY: "auto" }}>
-                {userAndMsg.length &&
-                    userAndMsg.map((msg, i) => (
-                        <ConversationsList key={i} lastMsg={msg} />
-                    ))}
-            </Card>
+            {userAndMsg.length ? (
+                <Card
+                    elevation={3}
+                    sx={{ maxHeight: "350px", overflowY: "auto" }}
+                >
+                    {userAndMsg.length &&
+                        userAndMsg.map((msg, i) => (
+                            <ConversationsList key={i} lastMsg={msg} />
+                        ))}
+                </Card>
+            ) : (
+                <Typography>You don't have any conversation yet.</Typography>
+            )}
             <Stack
                 direction="row"
                 justifyContent="space-between"
@@ -444,20 +458,25 @@ const Profile = () => {
                 <Button
                     href="/create-edit-article"
                     variant="contained"
-                    startIcon={<Circle />}
+                    startIcon={<Add />}
                     sx={{ boxShadow: 3 }}
                 >
                     create new article
                 </Button>
             </Stack>
-            {articles &&
+            {articles.length ? (
                 articles.map((article) => (
                     <ArticlesList
                         key={article.articleId}
                         article={article}
                         editMode={true}
                     />
-                ))}
+                ))
+            ) : (
+                <Typography>
+                    You don't have any ppublished article yet. Publish one now!
+                </Typography>
+            )}
             {moreButton && (
                 <Button
                     endIcon={<KeyboardArrowDown />}

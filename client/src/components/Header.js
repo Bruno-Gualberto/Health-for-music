@@ -32,9 +32,10 @@ const Header = (props) => {
         <>
             <HideOnScroll {...props}>
                 <AppBar
+                    className="appbar"
                     position="sticky"
                     elevation={0}
-                    sx={{ px: 21, width: 1 }}
+                    sx={{ width: 1 }}
                 >
                     <Toolbar>
                         <Box sx={{ flexGrow: 1 }}>

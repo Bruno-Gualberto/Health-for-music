@@ -8,16 +8,20 @@ import {
     Grid,
     TextField,
     Button,
+    MenuItem,
 } from "@mui/material";
 import { KeyboardArrowDown } from "@mui/icons-material";
 
 const Articles = () => {
     const [articles, setArticles] = useState([]);
     const [moreButton, setMoreButton] = useState(true);
+    const [title, setTitle] = useState("");
+    const [name, setName] = useState("");
+    const [specialty, setSpecialty] = useState("");
 
     useEffect(() => {
         (async () => {
-            const data = await fetch("/articles.json");
+            const data = await fetch("/all-articles.json");
             const articlesResp = await data.json();
             setArticles(articlesResp);
             articlesResp.filter(
@@ -27,9 +31,65 @@ const Articles = () => {
                 : setMoreButton(true);
         })();
     }, []);
+
+    console.log(articles);
+
+    const filterByTitle = (article, title) =>
+        article.title.toLowerCase().includes(title.toLowerCase());
+
+    const filterBySpecialty = (article, specialty) =>
+        article.specialties.toLowerCase().includes(specialty.toLowerCase());
+
+    const filterByName = ({ first, last }, name) => {
+        let fullName = `${first} ${last}`;
+        return fullName.toLowerCase().includes(name.toLowerCase());
+    };
+
+    const handleSearch = () => {
+        let result = [...articles];
+        if (title && specialty && name) {
+            result = result.filter((article) => {
+                return (
+                    filterByTitle(article, title) &&
+                    filterBySpecialty(article, specialty) &&
+                    filterByName(article, name)
+                );
+            });
+        } else if (title && specialty) {
+            result = result.filter((article) => {
+                return (
+                    filterByTitle(article, title) &&
+                    filterBySpecialty(article, specialty)
+                );
+            });
+        } else if (title && name) {
+            result = result.filter((article) => {
+                return (
+                    filterByTitle(article, title) && filterByName(article, name)
+                );
+            });
+        } else if (name && specialty) {
+            result = result.filter((article) => {
+                return (
+                    filterByName(article, name) &&
+                    filterBySpecialty(article, specialty)
+                );
+            });
+        } else if (title) {
+            result = result.filter((article) => filterByTitle(article, title));
+        } else if (specialty) {
+            result = result.filter((article) =>
+                filterBySpecialty(article, specialty)
+            );
+        } else if (name) {
+            result = result.filter((article) => filterByName(article, name));
+        }
+        setArticles(result);
+    };
+
     const handleClick = async () => {
         const smallestId = articles[articles.length - 1].articleId;
-        const data = await fetch(`/more-articles/${smallestId}.json`);
+        const data = await fetch(`/more-all-articles/${smallestId}.json`);
         const moreArticles = await data.json();
         setArticles([...articles, ...moreArticles]);
         moreArticles.filter((article) => article.articleId === article.lowestId)
@@ -52,7 +112,6 @@ const Articles = () => {
                 sx={{
                     p: 1,
                     my: 3,
-                    width: 1,
                     bgcolor: "primary.dark",
                     color: "#ffffff",
                 }}
@@ -65,6 +124,8 @@ const Articles = () => {
                             name="findArticles"
                             fullWidth
                             placeholder="Type here to find articles"
+                            value={title}
+                            onChange={({ target }) => setTitle(target.value)}
                         />
                     </Grid>
                     <Grid item xs={2}>
@@ -73,11 +134,64 @@ const Articles = () => {
                             variant="contained"
                             fullWidth
                             sx={{ boxShadow: 3 }}
+                            onClick={handleSearch}
                         >
                             Find articles
                         </Button>
                     </Grid>
-                    <Grid item>selects</Grid>
+                    <Grid item>
+                        <TextField
+                            className="select"
+                            size="small"
+                            label="Select a doctor"
+                            select
+                            value={name}
+                            onChange={({ target }) => setName(target.value)}
+                            sx={{
+                                minWidth: "200px",
+                                mr: 1,
+                            }}
+                        >
+                            <MenuItem value="">
+                                <em>None</em>
+                            </MenuItem>
+                            <MenuItem value="Spider Doctor">
+                                Spider Doctor
+                            </MenuItem>
+                            <MenuItem value="Gandalf The Grey">
+                                Gandalf The Grey
+                            </MenuItem>
+                            <MenuItem value="Ashton NotKutcher">
+                                Ashton NotKutcher
+                            </MenuItem>
+                            <MenuItem value="Bruno Gualberto">
+                                Bruno Gualberto
+                            </MenuItem>
+                        </TextField>
+                        <TextField
+                            className="select"
+                            size="small"
+                            label="Select health area"
+                            select
+                            value={specialty}
+                            onChange={({ target }) =>
+                                setSpecialty(target.value)
+                            }
+                            sx={{ minWidth: "200px" }}
+                        >
+                            <MenuItem value="">
+                                <em>None</em>
+                            </MenuItem>
+                            <MenuItem value="Musicians health">
+                                Musicians health
+                            </MenuItem>
+                            <MenuItem value="Ears">Ears</MenuItem>
+                            <MenuItem value="Mental health">
+                                Mental health
+                            </MenuItem>
+                            <MenuItem value="Hand">Hand</MenuItem>
+                        </TextField>
+                    </Grid>
                 </Grid>
             </Card>
 

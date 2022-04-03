@@ -37,13 +37,15 @@ const DoctorProfile = () => {
                 `/doctor-articles/${doctorId}.json`
             );
             const docArticles = await respArticles.json();
-            setArticles(formatArticles(docArticles, doctorInfo));
 
-            docArticles.filter(
-                (article) => article.articleId === article.lowestId
-            ).length
-                ? setMoreButton(false)
-                : setMoreButton(true);
+            if (docArticles.length) {
+                setArticles(formatArticles(docArticles, doctorInfo));
+                docArticles.filter(
+                    (article) => article.articleId === article.lowestId
+                ).length
+                    ? setMoreButton(false)
+                    : setMoreButton(true);
+            }
 
             if (ownProfile) {
                 setOwnProfile(true);
@@ -167,10 +169,15 @@ const DoctorProfile = () => {
                 Dr. {doctor.first} {doctor.last}'s articles
             </Typography>
 
-            {articles &&
+            {articles.length ? (
                 articles.map((article) => (
                     <ArticlesList key={article.articleId} article={article} />
-                ))}
+                ))
+            ) : (
+                <Typography>
+                    Dr. {doctor.last} doesn't have any articles yet.
+                </Typography>
+            )}
 
             {moreButton && (
                 <Button

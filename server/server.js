@@ -65,7 +65,6 @@ app.post("/add-doctor.json", async (req, res) => {
     const { rows } = query;
     req.session.userId = rows[0].id;
     req.session.doctor = rows[0].doctor;
-    console.log("rows[0]", rows[0]);
     res.json(rows[0]);
 });
 
@@ -75,7 +74,6 @@ app.post("/add-user.json", async (req, res) => {
     const { rows } = query;
     req.session.userId = rows[0].id;
     req.session.doctor = rows[0].doctor;
-    console.log("rows[0]", rows[0]);
     res.json(rows[0]);
 });
 
@@ -99,6 +97,16 @@ app.get("/articles.json", async (req, res) => {
     }
 });
 
+app.get("/all-articles.json", async (req, res) => {
+    try {
+        const query = await db.getAllArticles();
+        const { rows } = query;
+        res.json(rows);
+    } catch (err) {
+        console.log("error on GET /all-articles.json: ", err);
+    }
+});
+
 app.get("/more-articles/:smallestId.json", async (req, res) => {
     try {
         const smallestId = parseInt(req.params.smallestId);
@@ -107,6 +115,17 @@ app.get("/more-articles/:smallestId.json", async (req, res) => {
         res.json(rows);
     } catch (err) {
         console.log("error on GET /more-articles/:smallestId.json: ", err);
+    }
+});
+
+app.get("/more-all-articles/:smallestId.json", async (req, res) => {
+    try {
+        const smallestId = parseInt(req.params.smallestId);
+        const query = await db.getMoreAllArticles(smallestId);
+        const { rows } = query;
+        res.json(rows);
+    } catch (err) {
+        console.log("error on GET /more-all-articles/:smallestId.json: ", err);
     }
 });
 
@@ -414,6 +433,25 @@ app.get("/all-users.json", async (req, res) => {
     }
 });
 
+app.get("/all-doctors.json", async (req, res) => {
+    try {
+        const { rows } = await db.getAllDoctors();
+        res.json(rows);
+    } catch (err) {
+        console.log("error on GET /all-doctors.json", err);
+    }
+});
+
+app.get("/more-doctors/:smallestId.json", async (req, res) => {
+    try {
+        const smallestId = parseInt(req.params.smallestId);
+        const { rows } = await db.getMoreDoctors(smallestId);
+        res.json(rows);
+    } catch (err) {
+        console.log("error on GET /more-doctors/:smallestId.json", err);
+    }
+});
+
 app.get("/logout", (req, res) => {
     delete req.session.userId;
     delete req.session.doctor;
@@ -438,7 +476,6 @@ io.on("connection", async (socket) => {
     const userId = socket.request.session.userId;
 
     privateChatIds[socket.id] = userId;
-    console.log("privateChatIds", privateChatIds);
 
     const { rows: allPrivMsgs } = await db.getPrivateMsgs(userId);
     socket.emit("allPrivMsgs", allPrivMsgs);
@@ -458,6 +495,5 @@ io.on("connection", async (socket) => {
 
     socket.on("disconnect", () => {
         delete privateChatIds[socket.id];
-        console.log(privateChatIds);
     });
 });

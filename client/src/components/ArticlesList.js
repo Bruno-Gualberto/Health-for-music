@@ -32,7 +32,7 @@ const ArticlesList = ({ article, editMode }) => {
                             variant="subtitle2"
                             sx={{ lineHeight: 1, color: "#818181" }}
                         >
-                            Doctor {article.first} {article.last}
+                            Dr. {article.first} {article.last}
                         </Typography>
                         <Typography variant="body2" sx={{ color: "#818181" }}>
                             Specialist in {article.specialties}

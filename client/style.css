@@ -84,7 +84,34 @@ input[name="findArticles"] {
     border-radius: 40px;
 }
 
-/* override button contained color secondary hover */
-/* .MuiButton-contained.MuiButton-containedSecondary:hover {
-    background-color: ;
-} */
+.MuiTextField-root.select label,
+.MuiTextField-root.select div[variant="outlined"],
+.MuiTextField-root.select svg {
+    color: #ffffff;
+}
+
+.MuiTextField-root.select fieldset {
+    border-color: #ffffff;
+}
+
+.chat-container {
+    padding: 0 192px;
+}
+
+.appbar {
+    padding: 0 168px;
+}
+
+.MuiButton-contained.MuiButton-containedSecondary:hover {
+    background-color: #87b3a5;
+}
+
+@media screen and (max-width: 900px) {
+    .chat-container {
+        padding: 0 32px;
+    }
+
+    .appbar {
+        padding: 0 8px;
+    }
+}
