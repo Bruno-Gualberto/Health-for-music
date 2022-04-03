@@ -9,6 +9,12 @@ main {
     min-height: calc(100vh - 67px);
 }
 
+.banner {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
 .footer {
     position: relative;
     width: 100vw;
